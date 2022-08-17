@@ -1,0 +1,36 @@
+<div data---="miniform__common.form__if:~PATH~;title:@(Configuration);icon:far fa-cog;autofocus:true;submit:?/submit;width:600" class="hidden" data-scope="~PATH~">
+	<div class="padding">
+		<div class="grid-2">
+			<div class="m">
+				<div data---="input__?.name__required:1;innerlabel:1;placeholder:@(Instance name)">@(Name)</div>
+			</div>
+			<div class="m">
+				<div data---="input__?.secret__required:1;innerlabel:1;camouflage:1;placeholder:@(Secret for passwords)">@(Secret)</div>
+			</div>
+		</div>
+		<div data---="input__?.db__required:1;innerlabel:1;placeholder:postgres\://user\:password@localhost/database">@(Connection string)</div>
+		<div class="help m">@(A connection string to the PostgreSQL database)</div>
+		<div data---="input__?.endpoint__required:0;innerlabel:1;placeholder:https\://yourapi.com">@(Endpoint for changelog)</div>
+		<div class="help">@(The app will notify your changelog endpoint if the Data or Type will be changed. All data are sent via POST method.)</div>
+	</div>
+	<nav data---="validate__?__if:value.password===value.passwordreply">
+		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+			TAPI('config_save @showloading', model, ASETTER('message/response @hideloading', '@(Configuration has been applied successfully)', function() {
+				hide();
+				EXEC('common/reload');
+			}));
+		};
+
+	});
+
+</script>

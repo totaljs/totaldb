@@ -1,0 +1,178 @@
+[
+	{
+		"id": "string",
+		"name": "Text",
+		"color": "#CDECBD",
+		"icon": "fas fa-font",
+		"type": "string",
+		"sortindex": 1
+	},
+	{
+		"id": "type",
+		"name": "Type",
+		"color": "#ECBDBD",
+		"icon": "fa fa-code-branch",
+		"type": "string",
+		"sortindex": 3
+	},
+	{
+		"id": "number",
+		"name": "Number",
+		"color": "#BDD1EC",
+		"icon": "fa fa-calculator",
+		"type": "number",
+		"sortindex": 3
+	},
+	{
+		"id": "date",
+		"name": "Date + Time",
+		"color": "#ECD9BD",
+		"icon": "fa fa-calendar-alt",
+		"type": "date",
+		"sortindex": 4
+	},
+	{
+		"id": "boolean",
+		"name": "Boolean",
+		"color": "#BDECDC",
+		"icon": "far fa-check-square",
+		"type": "boolean",
+		"sortindex": 5
+	},
+	{
+		"id": "multiline",
+		"name": "Multiline",
+		"color": "#CDECBD",
+		"icon": "fa fa-keyboard",
+		"type": "string",
+		"sortindex": 6
+	},
+	{
+		"id": "email",
+		"name": "Email",
+		"color": "#CDECBD",
+		"icon": "far fa-envelope",
+		"type": "string",
+		"sortindex": 7
+	},
+	{
+		"id": "phone",
+		"name": "Phone",
+		"color": "#CDECBD",
+		"icon": "fa fa-phone",
+		"type": "string",
+		"sortindex": 9
+	},
+	{
+		"id": "date2",
+		"name": "Date",
+		"color": "#ECD9BD",
+		"icon": "fa fa-calendar-alt",
+		"type": "date",
+		"sortindex": 10
+	},
+	{
+		"id": "user",
+		"name": "User",
+		"color": "#BDDAEC",
+		"icon": "far fa-user",
+		"type": "string",
+		"sortindex": 11
+	},
+	{
+		"id": "zip",
+		"name": "ZIP code",
+		"color": "#CDECBD",
+		"icon": "fas fa-map-signs",
+		"type": "string",
+		"sortindex": 12
+	},
+	{
+		"id": "url",
+		"name": "URL address",
+		"color": "#CDECBD",
+		"icon": "fa fa-globe",
+		"type": "string",
+		"sortindex": 13
+	},
+	{
+		"id": "currency",
+		"name": "Currency",
+		"color": "#BDD1EC",
+		"icon": "fa fa-euro-sign",
+		"type": "number",
+		"sortindex": 14
+	},
+	{
+		"id": "color",
+		"name": "Color",
+		"color": "#CDECBD",
+		"icon": "fa fa-paint-roller",
+		"type": "string",
+		"sortindex": 15
+	},
+	{
+		"id": "icon",
+		"name": "Icon",
+		"color": "#CDECBD",
+		"icon": "far fa-image",
+		"type": "string",
+		"sortindex": 16
+	},
+	{
+		"id": "json",
+		"name": "JSON",
+		"color": "#CDECBD",
+		"icon": "fa fa-code",
+		"type": "string",
+		"sortindex": 17
+	},
+	{
+		"id": "guid",
+		"name": "GUID",
+		"color": "#CDECBD",
+		"icon": "fas fa-crosshairs",
+		"type": "string",
+		"sortindex": 18
+	},
+	{
+		"id": "uid",
+		"name": "UID",
+		"color": "#CDECBD",
+		"icon": "fas fa-crosshairs",
+		"type": "string",
+		"sortindex": 19
+	},
+	{
+		"id": "html",
+		"name": "HTML content",
+		"color": "#CDECBD",
+		"icon": "fa fa-code",
+		"type": "string",
+		"sortindex": 19
+	},
+	{
+		"id": "base64",
+		"name": "Base64",
+		"color": "#CDECBD",
+		"icon": "far fa-file-alt",
+		"type": "string",
+		"sortindex": 20
+	},
+	{
+		"id": "name",
+		"name": "Name",
+		"color": "#CDECBD",
+		"icon": "far fa-address-card",
+		"type": "string",
+		"sortindex": 21
+	},
+	{
+		"id": "password",
+		"name": "Password",
+		"color": "#CDECBD",
+		"icon": "fa fa-lock",
+		"type": "string",
+		"sortindex": 22
+	}
+]

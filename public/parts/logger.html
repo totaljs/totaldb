@@ -1,0 +1,47 @@
+<style>
+	.~PATH~ figure { border-top: 1px solid #E0E0E0; padding: 5px 10px; font-size: 11px; }
+	.~PATH~ figure .date { float: right; }
+	.~PATH~ figure .url { font-family: Menlo,Consolas,monospace; }
+	.~PATH~ figure:first-child { border-top: 0; }
+	.~PATH~ figure pre { tab-size: 2; background-color: #F0F0F0; padding: 5px; border-radius: var(--radius); font-family: Menlo,Consolas,monospace; }
+	.~PATH~ .headline { height: 30px; line-height: 30px; border-bottom: 1px solid #E0E0E0; background-color: #F0F0F0; font-size: 12px; padding: 0 10px; }
+	.~PATH~ .headline i { margin-right: 5px; }
+</style>
+
+<div data-scope="~PATH~ logger__aclass:1;init:?/init__{}">
+	<div class="headline"><span class="exec pull-right" data-exec="?/clear"><i class="far fa-trash-alt red"></i></span><i class="far fa-bug"></i><b>@(REST API Logger)</b></div>
+	<div data---="viewbox__null__parent:auto;scrollbarshadow:1;margin:30">
+		<div class="target"></div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('~PATH~ logger', function(exports) {
+
+		exports.clear = function(el) {
+			el.closest('[data-scope]').find('.target').empty();
+		};
+
+		exports.append = function(url, data) {
+
+			url = url.replace(/GET|POST|PUT|PATCH|DELETE\s/, function(text) {
+				text = text.trim();
+				switch (text) {
+					case 'GET':
+						return '<span class="badge badge-medium badge-blue">{0}</span> '.format(text);
+					case 'POST':
+					case 'PUT':
+					case 'PATCH':
+						return '<span class="badge badge-medium badge-orange">{0}</span> '.format(text);
+					case 'DELETE':
+						return '<span class="badge badge-medium badge-red">{0}</span> '.format(text);
+				}
+			});
+
+			var el = exports.element.find('.target');
+			el.append('<figure><div class="date">{1}</div><div class="url">{0}</div>'.format(url, (new Date()).format('[ts]')) + (data ? '<div class="data"><pre>{0}</pre></div>'.format(Thelpers.jsonformat(data)) : '') + '</figure>');
+			el.component().scrollbottom(0);
+		};
+
+	});
+</script>

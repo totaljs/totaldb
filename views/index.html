@@ -1,0 +1,661 @@
+@{title('Total DB')}
+@{layout('')}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+	<meta name="robots" content="all,follow" />
+	<link rel="stylesheet" href="@{'%cdn'}/spa.min@19pro.css" />
+	<script src="@{'%cdn'}/spa.min@19beta.js"></script>
+	@{import('meta', 'head', 'ui.js', 'default.css', 'favicon.ico')}
+</head>
+<body data---="exec">
+
+	<div data---="locale"></div>
+	<div data---="LAZY directory__null__placeholder:@(Search)"></div>
+	<div data---="LAZY colorpicker"></div>
+	<div data---="LAZY faicons"></div>
+	<div data---="LAZY datepicker"></div>
+	<div data---="LAZY approve"></div>
+	<div data---="LAZY menu"></div>
+	<div data---="LAZY notifybar"></div>
+	<div data---="LAZY clipboard"></div>
+	<div data---="LAZY message__null__style:2"></div>
+	<div data---="LAZY fileuploader"></div>
+
+	<div data---="windows__common.windows"></div>
+	<div data---="edit"></div>
+
+	<div data---="importer__common.form2__if:formtoken;url:/forms/token.html"></div>
+	<div data---="importer__common.form2__if:formattr;url:/forms/attr.html"></div>
+	<div data---="importer__common.form__if:formtype;url:/forms/type.html"></div>
+	<div data---="importer__common.form__if:formpassword;url:/forms/password.html"></div>
+	<div data---="importer__common.form__if:formpaste;url:/forms/paste.html"></div>
+	<div data---="importer__common.form__if:formtokens;url:/forms/tokens.html"></div>
+	<div data---="importer__common.form__if:formconfig;url:/forms/config.html"></div>
+
+	<div data---="columns__null__parent:window" class="invisible">
+		<section data-size="60" class="menu">
+			<span class="mainmenu exec" data-exec="common/menu"><i class="fa fa-th"></i></span>
+			<nav data-bind="common.ready__show">
+				<span class="exec" data-exec="common/create" title="@(New type)"><i class="far fa-plus-circle green"></i></span>
+				<span class="exec" data-exec="common/nodes" title="@(Active types)"><i class="far fa-list"></i></span>
+				<span class="exec" data-exec="common/tokens" title="@(Tokens)"><i class="far fa-plug"></i></span>
+			</nav>
+		</section>
+		<section>
+			<div data---="layout__null__parent:auto" class="invisible">
+				<script type="text/plain">
+					{
+						bottom: { size: 140, resize: true, minsize: 100 },
+						main: {}
+					}
+				</script>
+
+				<section data-type="main">
+					<div data---="viewbox__null__parent:auto;visibleX:1" class="invisible">
+						<div data---="flow__common.map__width:6000;height:6000;grid:15;outputoffsetY:2;horizontal:1;dblclick:common/browse;contextmenu:common/contextmenu"></div>
+					</div>
+				</section>
+
+				<section data-type="bottom">
+					<div data-import="url:/parts/logger.html;path:logger"></div>
+				</section>
+			</div>
+		</section>
+	</div>
+
+	<script type="text/html" id="template_map">
+		<figure data-id="{{ value.id }}" class="flowtype">
+			{{ if value.category }}
+			<div class="category"><span class="badge badge-medium" style="background:{{ value.category | color }}">{{ value.category }}</span></div>
+			{{ fi }}
+			<div class="name b hellip"><i class="{{ value.icon | empty('fas fa-database') }}"{{ if value.color }} style="color:{{ value.color }}"{{ fi }}></i>{{ value.title }}</div>
+			<div class="note">{{ value.note }}</div>
+			<div class="id exec" data-exec="?/copy"><i class="far fa-copy"></i>{{ value.id }}</div>
+			<div class="rows"><i class="far fa-calculator"></i><span data-bind="common.cache.{{ value.id }}__text__helper:pluralize('@(# rows,# row,# rows,# rows)')"></span></div>
+			<nav>
+				<button class="exec" data-exec="common/browse"><i class="far fa-database"></i>@(Records)</button>
+				<button class="exec" data-exec="common/contextmenu"><i class="fas fa-cog"></i>@(Options)</button>
+			</nav>
+		</figure>
+	</script>
+
+	<script>
+		var common = {};
+
+		common.windows = [];
+		common.page = '';
+		common.cache = {};
+		common.ready = false;
+
+		DEF.api = '/';
+
+		PLUGIN('common', function(exports) {
+
+			exports.refresh = function() {
+				TAPI('types', ERROR(function(response) {
+
+					var tmp = {};
+					for (var item of response) {
+						var cat = item.category || '$';
+						item.title = item.name;
+						item.name = (item.category ? (item.category + ' / ') : '') + item.name;
+						if (tmp[cat])
+							tmp[cat].items.push(item);
+						else
+							tmp[cat] = { name: item.category || '', items: [item] };
+
+						item.cache = {};
+						for (var attr of item.attrs)
+							item.cache[attr.id] = attr;
+
+						if (item.default) {
+							item.default = item.default.trim();
+							switch (item.type) {
+								case 'number':
+								case 'currency':
+									item.default = item.default.parseFloat();
+									break;
+								case 'date':
+								case 'date2':
+									item.default = item.default == 'now' || item.default === 'NOW' ? NOOP : item.default.parseDate('yyyy-MM-dd HH:mm:ss');
+									break;
+								case 'boolean':
+									item.default = item.default === 'true' || item.default === '1' || item.default === 'on';
+									break;
+								case 'user':
+									item.default = '';
+									break;
+							}
+						}
+					}
+
+					var arr = [];
+					for (var m in tmp) {
+						tmp[m].items.quicksort('name');
+						arr.push(tmp[m]);
+					}
+
+					delete tmp.$;
+
+					arr.quicksort('name');
+					response.quicksort('name');
+
+					SET('?.grouped', arr);
+					SET('?.types', response);
+
+					var map = {};
+					var index = 100;
+					var maptemplate = Tangular.compile($('#template_map').html());
+					var save = function(el, obj) {
+						TAPI('types_offset @sync', { id: obj.id, x: obj.x, y: obj.y });
+					};
+
+					var make = function(el, obj) {
+						el.css('border-color', obj.meta.color || '');
+					};
+
+					for (var item of response) {
+						var obj = {};
+						obj.id = item.id;
+						obj.meta = item;
+						obj.actions = { connect: false, remove: false };
+						obj.x = item.x;
+						obj.y = item.y;
+						obj.html = maptemplate({ value: item });
+						obj.outputs = [];
+						obj.inputs = [];
+						obj.connections = {};
+						obj.attrs = {};
+						obj.onmove = save;
+						obj.ondone = make;
+
+						for (var attr of item.attrs) {
+							obj.attrs[attr.id] = attr;
+							if (attr.typeid)
+								obj.inputs.push({ id: attr.id, name: attr.name });
+						}
+
+						map[obj.id] = obj;
+					}
+
+					for (var key in map) {
+
+						var item = map[key];
+						if (!item.inputs.length)
+							continue;
+
+						for (var input of item.inputs) {
+
+							var attr = item.attrs[input.id];
+							var target = map[attr.typeid];
+
+							target.outputs.push({ id: attr.id, name: item.meta.singular });
+							target.connections[attr.id] = [{ id: item.id, index: input.id }];
+						}
+					}
+
+					arr = [];
+
+					for (var m in tmp) {
+						var name = tmp[m].name;
+						if (name)
+							arr.push({ id: name, name: name });
+					}
+
+					map.groups = [];
+
+					SET('DEF.cl.attrs', response);
+					SET('DEF.cl.categories', arr);
+					SET('?.map', map);
+
+					exports.recount();
+				}));
+			};
+
+			exports.find = function(el) {
+				var id = ATTRD(el);
+				CMD('flow.find', id);
+			};
+
+			exports.recount = function() {
+				TAPI('types_count', function(response) {
+					var model = exports.model;
+					for (var item of response)
+						model.cache[item.id] = item.count;
+					UPD('?.cache');
+				});
+			};
+
+			exports.nodes = function() {
+
+				var model = exports.model;
+				var id = 'nodes';
+
+				if (model.windows.findItem('id', id)) {
+					SETTER('windows/focus', id);
+					return;
+				}
+
+				PUSH('?.windows', { id: id, cachekey: id, html: '<div data-import="url:@{#}/windows/nodes.html"></div>', title: '@(Active types)', actions: { move: true, autosave: true, close: true, maximize: false, minimize: false }, offset: { x: ((WW / 2) - 150) >> 0, y: ((WH / 2) - 200) >> 0, width: 300, height: 400, minwidth: 200, minheight: 300, maxwidth: 500, maxheight: 800 }});
+			};
+
+			exports.password = function() {
+				TAPI('auth', ASETTER('message/response', function(response) {
+					SET('formpassword @reset', response);
+					SET('common.form', 'formpassword');
+				}));
+			};
+
+			exports.update = function(el) {
+				var id = ATTRD(el);
+				TAPI('types_read/' + id, function(response) {
+					for (var m of response.attrs)
+						m.used = true;
+					SET('formtype @reset', response);
+					SET('?.form', 'formtype');
+				});
+			};
+
+			exports.create = function() {
+				var path = 'formtype';
+				SET(path + ' @reset', { attrs: [], options: { ispartial: true }});
+				SET('common.form', path);
+			};
+
+			exports.contextmenu = function(el, type, com) {
+
+				var opt = {};
+
+				if (el.currentTarget) {
+					// Event
+					opt.x = el.pageX;
+					opt.y = el.pageY;
+					el = com;
+				} else
+					opt.element = el;
+
+				opt.items = [];
+				opt.items.push({ id: 'data', name: '@(Show data)', icon: 'fa fa-search', classname: 'b' });
+				opt.items.push({ id: 'form', name: '@(Insert a record)', icon: 'far fa-plus-circle green' });
+				opt.items.push({ id: 'edit', name: '@(Edit type)', icon: 'far fa-pencil' });
+				opt.items.push({ id: 'copy', name: '@(Copy as JSON)', icon: 'far fa-copy' });
+				opt.items.push('-');
+				opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'far fa-trash-alt red' });
+				opt.callback = function(selected) {
+					switch (selected.id) {
+						case 'data':
+							exports.browse(el);
+							break;
+						case 'form':
+							exports.detail(el);
+							break;
+						case 'remove':
+							exports.remove(el);
+							break;
+						case 'edit':
+							exports.update(el);
+							break;
+						case 'copy':
+							TAPI('types_read/' + ATTRD(el), ERROR(function(response) {
+								response.id = '@' + response.id;
+								response.collection = 'type';
+								delete response.dtremoved;
+								delete response.isremoved;
+								SETTER('notifybar/success', '@(Copied)');
+								SETTER('clipboard/copy', STRINGIFY(response));
+							}));
+							break;
+					}
+				};
+				SETTER('menu/show', opt);
+			};
+
+			exports.remove = function(el) {
+				SETTER('approve/show', '@(Are you sure you want to remove selected type?)', '"far fa-trash-alt" @(Remove)', function() {
+					var id = ATTRD(el);
+					TAPI('types_remove/' + id, ERROR(function() {
+						var key = 'data' + id;
+						W[key] && SETTER('windows/close', key);
+						EXEC('common/refresh');
+					}));
+				});
+			};
+
+			exports.copy = function(el) {
+				SETTER('clipboard/copy', el.text());
+				SETTER('notifybar/success', '@(Copied)');
+			};
+
+			exports.browse = function(el) {
+
+				var id = ATTRD(el);
+				var type = DEF.cl.attrs.findItem('id', id);
+				var win = {};
+
+				win.id = 'data' + id;
+
+				if (common.windows.findItem('id', win.id)) {
+					SETTER('windows/focus', win.id);
+					return;
+				}
+
+				win.cachekey = 'data' + id;
+				win.offset = { x: 200, y: 100, width: 840, height: 500, minwidth: 450, minheight: 300 };
+				win.actions = { move: true, close: true, resize: true, maximize: true, minimize: false, autosave: true };
+				if (!type.icon)
+					type.icon = 'fa fa-database';
+				win.title = '<i class="{icon} mr5"></i>{name}'.args(type);
+				win.html = '<div data-import="url:/windows/data.html;path:{1}" data-id="{0}"></div>'.format(id, win.id);
+				win.destroy = function() {
+					delete W[win.id];
+				};
+
+				PUSH('?.windows', win);
+			};
+
+			exports.detail = function(el, docid) {
+
+				var id = ATTRD(el);
+				var type = DEF.cl.attrs.findItem('id', id);
+				var win = {};
+
+				win.id = 'detail' + id + (docid || '');
+
+				if (common.windows.findItem('id', win.id)) {
+					SETTER('windows/focus', win.id);
+					return;
+				}
+
+				win.cachekey = 'detail' + id;
+				win.offset = { x: 200, y: 100, width: 500, height: 500, minwidth: 400, minheight: 300 };
+				win.actions = { move: true, close: true, resize: true, maximize: true, minimize: false, autosave: true };
+				win.title = '<i class="{icon} mr5"></i>{name}'.args(type);
+				win.html = '<div data-import="url:/windows/form.html;path:{1}" data-id="{0}-{2}"></div>'.format(id, win.id, docid || '');
+				win.destroy = function() {
+					delete W[win.id];
+				};
+
+				PUSH('?.windows', win);
+			};
+
+			exports.prepare = function(typeid, items) {
+
+				var type = DEF.cl.attrs.findItem('id', typeid);
+				var response = {};
+
+				response.head = [{ id: 'id', name: 'ID' }, { id: 'name', name: '@(Name)' }];
+				response.body = [];
+
+				for (var t of type.attrs) {
+					if (!t.array) {
+						var m = CLONE(t);
+						if (m.type === 'type')
+							m.id += '_name';
+						response.head.push(m);
+					}
+				}
+
+				response.head.push({ id: 'dtcreated', name: '@(Created)' });
+				response.head.push({ id: 'dtupdated', name: '@(Updated)' });
+
+				if (!items)
+					return response;
+
+				for (var item of items) {
+
+					var value = null;
+					var obj = {};
+
+					obj.id = item.id;
+					obj.name = item.name;
+					obj.dtcreated = item.dtcreated;
+					obj.dtupdated = item.dtupdated;
+
+					for (var t of type.attrs) {
+
+						if (t.array)
+							continue;
+
+						var val = item[t.id];
+						switch (t.type) {
+							case 'currency':
+								// value = val == null ? '' : (val.format(2) + ' ' + t.currency);
+								value = val;
+								break;
+							case 'number':
+								// value = val == null ? '' : ((val + '').indexOf('.') === -1 ? val.format(0) : val.format(2));
+								value = val;
+								break;
+							case 'date':
+								// value = val == null ? '' : val.format('[ts]');
+								value = val;
+								break;
+							case 'type':
+								value = val ? val.name : '';
+								break;
+							case 'boolean':
+								// value = val ? '1' : '0';
+								value = val;
+								break;
+							default:
+								value = val;
+								break;
+						}
+
+						if (t.type === 'type')
+							obj[t.id + '_name'] = value;
+						else
+							obj[t.id] = value;
+
+					}
+
+					response.body.push(obj);
+				}
+
+				return response;
+			};
+
+			exports.menu = function(el) {
+				var opt = {};
+				opt.element = el;
+				opt.align = 'left';
+				opt.items = [];
+
+				if (common.ready) {
+					opt.items.push({ id: 'create', name: '@(New type)', icon: 'far fa-plus-circle green', classname: 'b' });
+					opt.items.push({ id: 'nodes', name: '@(Active types)', icon: 'far fa-list' });
+					opt.items.push('-');
+				}
+
+				opt.items.push({ id: 'config', name: '@(Configure)', icon: 'far fa-cog' });
+				opt.items.push({ id: 'credentials', name: '@(Change credentials)', icon: 'far fa-key' });
+
+				if (common.ready) {
+					opt.items.push({ id: 'tokens', name: '@(API Tokens)', icon: 'far fa-plug' });
+					opt.items.push('-');
+					opt.items.push({ id: 'export', name: '@(Export types)', icon: 'far fa-cloud-download' });
+					opt.items.push({ id: 'exportall', name: '@(Export types + data)', icon: 'far fa-cloud-download' });
+					opt.items.push({ id: 'import', name: '@(Import file)', icon: 'far fa-cloud-upload', classname: 'b' });
+					opt.items.push({ id: 'paste', name: '@(Paste JSON)', icon: 'far fa-paste', classname: 'b' });
+					opt.items.push('-');
+					opt.items.push({ id: 'maintenance', name: '@(Maintenance)', icon: 'far fa-wrench' });
+					opt.items.push({ id: 'clear', name: '@(Clear database)', icon: 'far fa-recycle red' });
+				}
+
+				opt.items.push('-');
+				opt.items.push({ id: 'logout', name: '@(Logout)', icon: 'far fa-power-off red' });
+				opt.callback = function(selected) {
+					exports[selected.id]();
+				};
+				SETTER('menu/show', opt);
+			};
+
+			exports.config = function() {
+				TAPI('config_read', ERROR(function(response) {
+					SET('formconfig @reset', response);
+					SET('common.form', 'formconfig');
+				}));
+			};
+
+			exports.maintenance = function() {
+				SETTER('approve/show', '@(Are you sure you want to run maintenance on the database? The app will remove all removed records and perform VACUUM.)', '"far fa-wrench" @(Continue)', function() {
+					TAPI('maintenance @showloading', ERROR(function() {
+						SETTER('notifybar/success @hideloading', '@(Maintenance has been finished)');
+					}));
+				});
+			};
+
+			exports.paste = function() {
+				SET('formpaste @reset', {});
+				SET('common.form', 'formpaste');
+			};
+
+			exports.tokens = function() {
+				SET('common.form', 'formtokens');
+			};
+
+			exports.export = function() {
+				location.href = '/internal/backup/';
+			};
+
+			exports.exportall = function() {
+				location.href = '/internal/backup/?data=1';
+			};
+
+			exports.import = function() {
+				var opt = {};
+				opt.multiple = false;
+				opt.url = '/internal/restore/';
+				opt.callback = function(response, err) {
+
+					if (err) {
+						SETTER('message/warning', err);
+						return;
+					}
+
+					SETTER('notifybar/success', '@(Import has been finished)');
+					EXEC('?/refresh');
+				};
+
+				SETTER('fileuploader/upload', opt);
+			};
+
+			exports.clear = function() {
+				SETTER('approve/show', '@(Are you sure you want to clear database?)', '"far fa-trash-alt" @(Clear)', function() {
+					TAPI('types_clear', AEXEC('?/refresh'));
+				});
+			};
+
+			exports.credentials = function() {
+				TAPI('auth', ERROR(function(response) {
+					var path = 'formpassword';
+					SET(path + ' @reset', response);
+					SET('common.form', path);
+				}));
+			};
+
+			exports.logout = function() {
+				location.href = '/logout/';
+			};
+
+			exports.reload = function() {
+				TAPI('check', ERROR(function(response) {
+
+					SET('common.ready', true);
+
+					CL_INIT('types', function(next) {
+						TAPI('cl', function(response) {
+							next(response);
+						});
+					});
+
+					CL('types', function() {
+						exports.refresh();
+					});
+
+				}, function() {
+					SET('common.ready', false);
+					exports.config();
+				}));
+			};
+
+
+			ON('knockknock', function(counter) {
+				if (counter % 5 === 0)
+					exports.recount();
+			});
+
+			// setTimeout(() => exports.tokens(), 500);
+			exports.reload();
+
+		});
+
+		ON('ERROR', function(err) {
+
+			var builder = [];
+			if (err instanceof Array) {
+				for (var item of err)
+					builder.push(item.error);
+			} else
+				builder.push(err + '');
+
+			SETTER('message/warning', builder.join('<br>'));
+		});
+
+		Thelpers.time = function(value) {
+
+			if (!value)
+				return value;
+
+			var diff = Date.now() - (value instanceof Date ? value : value.parseDate()).getTime();
+
+			var minutes = ((diff / 1000) / 60) >> 0;
+			if (minutes < 60) {
+				if (minutes < 3)
+					return 'now';
+				return minutes + ' minutes ago';
+			}
+
+			var hours = (minutes / 60) >> 0;
+			if (hours < 24)
+				return hours + ' ' + Thelpers.pluralize(hours, 'hours', 'hour', 'hours', 'hours') + ' ago';
+
+			var days = (hours / 24) >> 0;
+			if (days < 30)
+				return days + ' ' + Thelpers.pluralize(days, 'days', 'day', 'days', 'days') + ' ago';
+
+			var months = (days / 29) >> 0;
+			if (months < 12)
+				return months + ' ' + Thelpers.pluralize(months, 'months', 'month', 'months', 'months') + ' ago';
+
+			var years = (months / 12) >> 0;
+			return years + ' ' + Thelpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago';
+		};
+
+		FUNC.log = function(url, data) {
+			EXEC('logger/append', url.replace(' ', function(text) {
+				return ' ' + location.origin;
+			}), data);
+		};
+
+		Thelpers.time2 = function(value) {
+			return value ? '<span class="ta-time" data-time="{0}" title="{2}">{1}</span>'.format(value.getTime(), Thelpers.time(value), value.format(null)) : value;
+		};
+
+		ON('knockknock', function() {
+			$('.ta-time').each(function() {
+				var el = $(this);
+				el.html(Thelpers.time(new Date(+el.attrd('time'))));
+			});
+		});
+
+	</script>
+
+</body>
+</html>

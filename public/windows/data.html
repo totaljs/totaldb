@@ -1,0 +1,222 @@
+<div data-scope="~PATH~ datagrid__init:?/init">
+	<div class="toolbar toolbar-bg" style="padding-left:20px">
+		<div class="pull-right mt2">
+			<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="far fa-copy"></i></span> <span class="badge badge-gray"><code class="b" data-bind="?.id__text"></code></span>
+		</div>
+		<nav class="pull-left">
+			<button class="exec" data-exec="?/refresh"><i class="far fa-sync"></i>@(Refresh)</button>
+			<button class="exec" data-exec="?/update"><i class="far fa-cog"></i>@(Settings)</button>
+		</nav>
+		<nav class="pull-left ml10" data-bind="?.checked__disabled .selection:!value || !value.length">
+			<button class="exec b" data-exec="?/create"><i class="far fa-plus-circle green"></i>@(Create)</button>
+			<button class="exec selection" data-exec="?/copyjson" disabled><i class="far fa-copy"></i>@(Copy as JSON)</button>
+			<button class="exec selection" data-exec="?/remove"  disabled><i class="fas fa-trash-alt red"></i>@(Remove)</button>
+		</nav>
+	</div>
+	<div class="padding"></div>
+</div>
+
+<script>
+	PLUGIN('~PATH~ datagrid', function(exports) {
+
+		var ID;
+
+		exports.init = function(scope, el) {
+
+			ID = ATTRD(el);
+
+			var data = PLUGINS.common.prepare(ID);
+			var columns = [];
+
+			for (var col of data.head) {
+
+				var obj = {};
+				obj.name = col.id;
+				obj.text = col.name;
+				obj.width = 150;
+
+				var index = col.id.indexOf('_');
+				obj.title = index === -1 ? (col.name + ' - ' + col.id) : (col.name + ' - ' + col.id.substring(0, index));
+				obj.type = 'string';
+
+				switch (col.id) {
+					case 'id':
+						obj.width = 110;
+						obj.monospace = 1;
+						break;
+					case 'name':
+						obj.width = 200;
+						break;
+					case 'dtcreated':
+					case 'dtupdated':
+						obj.type = 'date';
+						obj.width = 140;
+						obj.format = '[ts]';
+						break;
+				}
+
+				switch (col.type) {
+					case 'type':
+						// obj.template = '{{ if {0} }}<span class=\\\"mr5 exec fs11 gray\\\" data-exec=\\\"?/typedetail\\\" data-prevent=\\\"true\\\">@(Detail)</span>{{ {0} }}{{ fi }}'.format(col.id);
+						break;
+					case 'boolean':
+					case 'number':
+						obj.type = col.type;
+						obj.width = 120;
+						break;
+					case 'currency':
+						obj.type = 'number';
+						obj.width = 120;
+						obj.template = '{{ {0} | format }} <span class=\\\"gray\\\">{1}</span>'.format(col.id, col.currency);
+						break;
+					case 'email':
+						obj.width = 200;
+						obj.type = 'email';
+						break;
+					case 'date':
+						obj.type = col.type;
+						obj.width = 150;
+						obj.format = '[ts]';
+						break;
+					case 'date2':
+						obj.type = 'date';
+						obj.width = 150;
+						obj.format = '[date]';
+						break;
+					case 'icon':
+						obj.sort = false;
+						obj.filter = false;
+						obj.width = 120;
+						obj.align = 1;
+						obj.template = '{{ if {0} }}<i class=\\\"{{ {0} }}\\\"></i>{{ fi }}'.format(col.id);
+						break;
+					case 'color':
+						obj.width = 120;
+						obj.monospace = true;
+						obj.template = '{{ if {0} }}<i class=\\\"fas fa-circle\\\" style=\\\"color:{{ {0} }}\\\"></i> {{ {0} }}{{ fi }}'.format(col.id);
+						break;
+				}
+
+				var str = '';
+
+				for (var key in obj) {
+					var val = obj[key];
+					var type = typeof(val);
+					str += (str ? ',' : '') + key + (type === 'number' || type === 'boolean' ? (':' + val) : (':"' + val + '"'));
+				}
+
+				columns.push('{' + str + '}');
+			}
+
+			SET('?.id', ID);
+			exports.element.find('.padding').append(('<div data' + '---="datagrid__{0}.response__height:.ui-windows-item;margin:135;checked:?.checked;exec:?/filter;click:?/detail" class="invisible"><scri' + 'pt type="text/html">[{1}]</scr' + 'ipt></div>').format(exports.name, columns.join(',')));
+			setTimeout(() => COMPILE(), 10);
+		};
+
+		exports.update = function() {
+			EXEC('common/update', ID);
+		};
+
+		exports.refresh = function() {
+			NUL('?.response');
+		};
+
+		exports.detail = function(row) {
+			EXEC('common/detail', ID, row.id);
+		};
+
+		exports.remove = function() {
+			var model = exports.model;
+			SETTER('approve/show', '@(Are you sure you want to remove selected ({0}x) records?)'.format(model.checked.length), '"far fa-trash-alt" @(Remove)', function() {
+				model.checked.wait(function(item, next) {
+					var url = 'DELETE /remove/{0}/{1}/'.format(ID, item.id);
+					FUNC.log(url);
+					AJAX(url, next);
+				}, () => NUL('?.response'));
+			});
+		};
+
+		exports.copy = function(el) {
+			SETTER('clipboard/copy', el.parent().find('code').text());
+		};
+
+		exports.copyjson = function(el) {
+
+			var model = exports.model;
+			var arr = [];
+			SETTER('loading/show');
+
+			model.checked.wait(function(item, next) {
+				TAPI('data_export/{0}/{1}'.format(ID, item.id), ERROR(function(response) {
+					response.id = '@' + response.id;
+					response.collection = ID;
+					delete response.dtremoved;
+					delete response.isremoved;
+					arr.push(response);
+					next();
+				}));
+			}, function() {
+				SETTER('loading/hide');
+				SETTER('notifybar/success', '@(Copied)');
+				SETTER('clipboard/copy', STRINGIFY(arr));
+			});
+
+		};
+
+		exports.create = function() {
+			EXEC('common/detail', ID);
+		};
+
+		exports.filter = function(type, filter, sort, page) {
+
+			if (!filter)
+				filter = {};
+
+			var model = exports.model;
+			var data = {};
+			data.sort = sort ? sort.join(',') : null;
+			data.page = page;
+
+			// data.query = [];
+
+			var type = common.types.findItem('id', model.id);
+
+			for (var key in filter) {
+
+				var index = key.lastIndexOf('_');
+				var tmp = key;
+				if (index !== -1)
+					tmp = tmp.substring(0, index);
+
+				var attr = type.cache[tmp];
+				if (attr) {
+					switch (attr.type) {
+						case 'string':
+						case 'email':
+						case 'phone':
+						case 'html':
+						case 'color':
+						case 'logo':
+						case 'file':
+						case 'photo':
+						case 'type':
+						case 'user':
+							data[key] = '%' + filter[key] + '%';
+							break;
+					}
+				} else if (key === 'id' || key === 'name')
+					data[key] = '%' + filter[tmp] + '%';
+			}
+
+			var url = QUERIFY('GET /list/{0}/'.format(ID), data);
+			FUNC.log(url);
+			AJAX(url, function(response) {
+				var data = PLUGINS.common.prepare(ID, response.items);
+				response.items = data.body;
+				SET('?.response', response, type === 'refresh' ? 'noscroll' : null);
+			});
+
+		};
+
+	});
+</script>

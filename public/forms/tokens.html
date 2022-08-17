@@ -1,0 +1,77 @@
+<div data---="box__common.form__if:~PATH~;title:@(Access tokens);icon:far fa-plug;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
+	<nav>
+		<button class="exec" data-exec="?/create"><i class="fa fa-plus-circle green"></i>@(Create)</button>
+	</nav>
+	<div>
+		<div data---="empty__?.items__parent:auto;marign:20">
+			<script type="text/html">
+				@(The app doesn't contain any access tokens)
+			</script>
+			<div class="padding">
+				<div data-bind="?.items__template" class="listing2">
+					<script type="text/html">
+						{{ foreach m in value }}
+						<figure data-id="{{ m.id }}" class="exec" data-exec="?/update">
+							<section>
+								<div class="pull-right">
+									<span class="gray mr10 fs12">{{ m.dtcreated | format('[date]') }}</span>
+									<span class="exec red" data-exec="?/remove" data-prevent="true"><i class="far fa-trash-alt"></i></span>
+								</div>
+									<span class="exec mr10" data-exec="?/copy" title="@(Copy token to the clipboard)" data-prevent="true"><i class="far fa-copy"></i></span>{{ m.name }}
+								</div>
+							</section>
+						</figure>
+						{{ end }}
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function(com) {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			TAPI('tokens @showloading', ERROR(true, '?.items @hideloading'));
+		};
+
+		exports.update = function(el) {
+			var id = ATTRD(el);
+			TAPI('tokens_read/' + id, ERROR(function(response) {
+				var path = 'formtoken';
+				SET(path + ' @reset', response);
+				SET('common.form2', path);
+			}));
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			SETTER('approve/show', '@(Are you sure you want to remove selected token?)', '"far fa-trash-alt" @(Remove)', function() {
+				TAPI('tokens_remove/' + id, exports.refresh);
+			});
+		};
+
+		exports.copy = function(el) {
+			var id = ATTRD(el);
+			var item = exports.model.items.findItem('id', id);
+			SETTER('clipboard/copy', item.token);
+		};
+
+		exports.create = function() {
+			var path = 'formtoken';
+			SET(path + ' @default', { token: GUID(30) });
+			SET('common.form2', path);
+		};
+
+	});
+
+</script>

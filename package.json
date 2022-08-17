@@ -1,0 +1,26 @@
+{
+  "name": "totaldb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/totaljs/totaldb"
+  },
+  "dependencies": {
+    "total4": "latest",
+    "querybuilderpg": "latest"
+  },
+  "scripts": {
+    "start": "node index.js 8000"
+  },
+  "keywords": [
+    "totaldb",
+    "postgresql",
+    "restapi",
+    "database",
+    "db"
+  ],
+  "author": "Total.js",
+  "contributors": ["Peter Širka"],
+  "license":"MIT"
+}

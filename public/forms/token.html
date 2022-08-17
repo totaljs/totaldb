@@ -1,0 +1,57 @@
+<div data---="box__common.form2__if:~PATH~;icon:fas fa-key;autofocus:true;reload:?/reload;submit:?/submit;width:600;zindex:20" class="hidden" data-scope="~PATH~">
+	<div>
+		<div class="padding npb">
+			<div data---="input__?.name__required:1;innerlabel:1;placeholder:@(Enter a token name)">@(Name)</div>
+			<div style="height:20px;margin-top:15px">
+				<div class="hidden exec fs12" data-exec="?/copy" data-bind="%showtoken__show">
+					<i class="far fa-copy"></i> <span class="badge badge-gray"><code data-bind="?.token__text"></code></span>
+				</div>
+				<div class="hidden exec fs12" data-bind="%showtoken__hide" data-exec="?/show">
+					<i class="fas fa-key"></i> @(Show token)
+				</div>
+			</div>
+			<hr style="margin-top:10px" />
+			<div data---="input__?.options.iswebsocket__type:checkbox">@(Allow WebSocket synchronization service for workers)</div>
+		</div>
+		<hr />
+		<div class="padding npt">
+			<div data---="input__?.types__dirsource:common.types;multiple:1;dirkey:name;placeholder:@(Choose types which you want to allow)">@(Allow types)</div>
+			<div class="help"><i class="far fa-question-circle blue"></i>@(If you don't choose any type, the token will have access to all types.)</div>
+		</div>
+	</div>
+	<nav data---="validate__?__changes:1;strictchanges:1">
+		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function(com) {
+			var model = exports.model;
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update token)' : '@(Create token)' });
+			SET('%showtoken', false);
+		};
+
+		exports.copy = function() {
+			SETTER('clipboard/copy', exports.model.token);
+		};
+
+		exports.show = function() {
+			TOGGLE('%showtoken', true);
+		};
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+			TAPI('tokens_save @showloading', model, ERROR(function() {
+				EXEC('formtokens/refresh');
+				hide();
+			}));
+		};
+
+	});
+
+</script>

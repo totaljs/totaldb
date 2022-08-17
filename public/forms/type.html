@@ -1,0 +1,208 @@
+<style>
+	.~PATH~ .listing2 .name i { width: 14px; margin-right: 5px; text-align: center; }
+</style>
+<div data---="box__common.form__if:~PATH~;icon:fas fa-code-branch;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
+	<div class="padding ~PATH~">
+
+		<div data-bind="?.id__template__show" class="m">
+			<script type="text/html">
+				<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="far fa-copy"></i></span> <span class="badge badge-gray"><code>{{ value }}</code></span>
+			</script>
+		</div>
+
+		<div class="grid-2">
+			<div class="m">
+				<div data---="input__?.name__required:1;innerlabel:1;placeholder:@(Enter name)">@(Pluralized name)</div>
+			</div>
+			<div class="m">
+				<div data---="input__?.singular__required:1;innerlabel:1;placeholder:@(Enter name)">@(Singular)</div>
+			</div>
+		</div>
+
+		<div class="grid-2">
+			<div class="m">
+				<div class="grid-2">
+					<div class="m">
+						<div data---="input__?.color__type:color;placeholder:@(Choose color)">@(Color)</div>
+					</div>
+					<div class="m">
+						<div data---="input__?.icon__type:icon;placeholder:@(Choose icon)__'fa fa-database'">@(Icon)</div>
+					</div>
+				</div>
+			</div>
+			<div class="m">
+				<div data---="input__?.category__dirsource:DEF.cl.categories;dircustom:1;dirplaceholder:@(Search or create new);placeholder:@(Choose a category)__''">@(Category)</div>
+			</div>
+		</div>
+
+		<hr class="nmt" />
+
+		<div data---="input__?.note" class="m">@(Note)</div>
+		<div>
+			<!--
+			<div data---="input__?.isbackup__type:checkbox">@(Auto backup changes)</div>
+			-->
+			<div data---="input__?.options.ispartial__type:checkbox__true">@(Enable partial updates)</div>
+		</div>
+		<hr />
+		<div class="message message-alert m">
+			<i class="fas fa-exclamation-triangle"></i>@(Every type contains an internal <b>"name"</b> field for humans identifing of stored records. Its ID is <b>name</b>.)
+		</div>
+
+		<div class="caption m">
+			<div class="toolbar">
+				<button class="exec" data-exec="?/add"><i class="fa fa-plus-circle green"></i>@(Add)</button>
+			</div>
+			<label><i class="fas fa-list"></i>@(Attributes)</label>
+		</div>
+
+		<div data---="movable__null__selector:figure;exec:?/move">
+			<div data-bind="?.attrs__template:figure" class="listing2">
+				<script type="text/html">
+					{{ foreach m in value }}
+					<figure data-id="{{ m.id }}" class="exec" data-exec="?/update" draggable="true">
+						<section>
+							<div class="pull-right">
+								{{ m.type | attrtype(m.typeid) }}
+								<span class="exec ml10 red" data-exec="?/remove"><i class="far fa-trash-alt"></i></span>
+							</div>
+							<span class="name">{{ m.type | attricon }} {{ if m.required }}<b class="red">{{ m.name }}</b>{{ else }}{{ m.name }}{{ fi }} <span class="fs11 gray exec link ml5" data-exec="?/copyattr" data-prevent="true">{{ m.id }}</span> {{ if m.note }}<span class="hellip ml5 fs12">{{ m.note }}</span>{{ fi }}</span>
+						</section>
+					</figure>
+					{{ end }}
+				</script>
+			</div>
+		</div>
+
+	</div>
+	<nav data---="validate__?__if:value && value.attrs.length">
+		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	Thelpers.attrtype = function(val, typeid) {
+		var item = DEF.cl.types.findItem('id', val);
+		if (item) {
+			var name = item.name;
+			if (item.id === 'type')
+				name = common.types.findValue('id', typeid, 'name');
+			return '<span class="Tattrtype" style="background:{0}">{1}</span>'.format(item.color, name);
+		}
+	};
+
+	Thelpers.attricon = function(val) {
+		var item = DEF.cl.types.findItem('id', val);
+		if (item)
+			return '<i class="{0}"></i>'.format(item.icon);
+	};
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function(com) {
+			var model = exports.model;
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update type)' : '@(Create type)' });
+		};
+
+		exports.submit = function(hide) {
+			var model = CLONE(exports.form);
+
+			if (!model.id) {
+				var pos = FIND('flow').parent().component().scrollbar;
+				model.x = pos.scrollLeft() + 100;
+				model.y = pos.scrollTop() + 100;
+			}
+
+			TAPI('types_save', model, ERROR(function() {
+
+				EXEC('common/refresh');
+				hide();
+
+				if (model.id) {
+					var key = 'data' + model.id;
+					if (W[key]) {
+						SETTER('windows/close', key);
+						setTimeout(AEXEC('common/browse', model.id), 500);
+					}
+				}
+
+			}));
+		};
+
+		exports.copyattr = function(el) {
+			SETTER('clipboard/copy', el.text());
+		};
+
+		exports.add = function(el) {
+
+			var model = exports.data;
+			var data = {};
+
+			if (!model.columns)
+				model.columns = 0;
+
+			model.columns++;
+			data.id = 'attr' + model.columns;
+
+			data.callback = function(attr) {
+				data.id = data.id.slug().replace(/\s|-|_/g, '');
+				exports.scope();
+				PUSH('?.attrs', attr);
+			};
+
+			SET('formattr @default', data);
+			SET('common.form2', 'formattr');
+		};
+
+		exports.update = function(el) {
+			var id = ATTRD(el);
+			var model = exports.model;
+			var index = model.attrs.findIndex('id', id);
+			if (index !== -1) {
+
+				data = CLONE(model.attrs[index]);
+				data.callback = function(attr) {
+					model.attrs[index] = attr;
+					exports.scope();
+					exports.upd('attrs');
+				};
+
+				SET('formattr @default', data);
+				SET('common.form2', 'formattr');
+			}
+		};
+
+		exports.copy = function(el) {
+			SETTER('clipboard/copy', el.parent().find('code').text());
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			var model = exports.model;
+			var index = model.attrs.findIndex('id', id);
+			if (index !== -1) {
+				model.attrs.splice(index, 1);
+				UPD('?.attrs @changed');
+			}
+		};
+
+		exports.move = function(list, dragged, target) {
+
+			var model = exports.model;
+			var attrs = model.attrs;
+			var arr = [];
+
+			for (var el of list) {
+				var id = ATTRD(el);
+				arr.push(attrs.findItem('id', id));
+			}
+
+			model.attrs = arr;
+		};
+
+	});
+
+</script>

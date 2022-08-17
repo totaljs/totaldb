@@ -1,0 +1,133 @@
+<style>
+	.~PATH~ .radiobutton { float: left; width: 20%; padding: 5px; font-size: 12px; text-align: center; }
+	.~PATH~ .radiobutton > div { border: 1px solid #E0E0E0; cursor: pointer; border-radius: var(--radius); line-height: 30px; background-color: #FFF; text-align: left; padding: 5px 10px; }
+	.~PATH~ .radiobutton > div i { width: 12px; margin-right: 8px; font-size: 14px; position: relative; display: inline-block; }
+	.~PATH~ .radiobutton.selected > div { background-color: #F0F0F0; }
+	.~PATH~ .ui-radiobuttonexpert-container { padding: 10px; }
+</style>
+
+<div data---="box__common.form2__if:~PATH~;icon:fa fa-sim-card;autofocus:true;reload:?/reload;submit:?/submit;width:700" class="hidden" data-scope="~PATH~">
+	<div class="~PATH~">
+		<div data---="radiobuttonexpert__?.type__datasource:DEF.cl.types__'string'">
+			<script type="text/html">
+				<div class="radiobutton">
+					<div><i class="{{ icon }}"></i>{{ name }}</div>
+				</div>
+			</script>
+		</div>
+		<div class="clearfix"></div>
+		<hr />
+		<div class="padding npt npb">
+
+			<div data-bind="?.type__show:value==='type'" class="hidden m">
+				<div data---="input__?.typeid__required:1;dirsource:common.types;placeholder:@(Choose type)">@(Type)</div>
+				<div class="help m"><i class="far fa-question-circle blue"></i>@(Choose a relation between this field and another type)</div>
+				<div data---="input__?.typeremove__type:checkbox">@(Remove this record if someone will remove the related record.)</div>
+				<hr />
+			</div>
+			<div class="grid-2 mt10">
+				<div class="m">
+					<div data---="input__?.name__required:1;innerlabel:1;placeholder:@(Enter name)">@(Name)</div>
+				</div>
+				<div class="m">
+					<div data---="input__?.note__innerlabel:1;placeholder:@(A custom note)">@(Note)</div>
+				</div>
+			</div>
+			<div class="grid-4">
+				<div class="m">
+					<div data---="input__?.id__monospace:1;required:1;align:1" data-bind="?.used__disabled" class="b">@(ID)</div>
+				</div>
+				<div class="m">
+					<div data---="input__?.color__type:color">@(Color)</div>
+				</div>
+				<div class="m">
+					<div data---="input__?.icon__type:icon">@(Icon)</div>
+				</div>
+				<div class="m">
+					<div data---="input__?.currency__required:1;monospace:1;align:1;type:upper__'EUR'" data-bind="?.type__enabled:value==='currency'">@(Currency)</div>
+				</div>
+			</div>
+			<div class="grid-4">
+				<div class="m">
+					<div data---="input__?.min__type:number;monospace:1__0">@(Min. value)</div>
+				</div>
+				<div class="m">
+					<div data---="input__?.max__type:number;monospace:1__0">@(Max. value)</div>
+				</div>
+			</div>
+			<hr />
+			<div class="grid-2">
+				<div class="m">
+					<div data---="input__?.error__placeholder:@(Value of {0} is invalid);icon:far fa-bug">@(Error message)</div>
+					<div class="help">@(The app will return the message if the value is not valid)</div>
+				</div>
+				<div class="m">
+					<div data---="input__?.default__monospace:1;placeholder:new Date();icon:far fa-code">@(Default value)</div>
+					<div class="help">@(The code will be evaluated as a raw JavaScript code)</div>
+				</div>
+			</div>
+			<div class="m">
+				<div data---="input__?.validate__placeholder:return value.indexOf('-') !== -1\;;innerlabel:1;type:multiline;monospace:1">@(A custom validation)</div>
+				<div class="help">@(Additional validation mechanism)</div>
+			</div>
+		</div>
+		<hr />
+		<div class="padding npt">
+
+			<div data---="input__?.required__type:checkbox" class="b">@(Required)</div>
+			<div data---="input__?.locked__type:checkbox">@(Lock after filling a value)</div>
+
+			<!--
+			<div data---="input__?.backup__type:checkbox">@(Backup all changes)</div>
+			<div data---="input__?.array__type:checkbox" data-bind="?.used__disabled">@(Array of values)</div>
+			-->
+
+		</div>
+	</div>
+	<nav data---="validate__?">
+		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function(com) {
+			var model = exports.model;
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update attribute)' : '@(Create attribute)' });
+		};
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+
+			// test
+			if (model.default) {
+				try {
+					new Function('return ' + model.default)();
+				} catch (e) {
+					SETTER('message/warning', '<b>@(Default value error:)</b> ' + e);
+					return;
+				}
+			}
+
+			if (model.validate) {
+				try {
+					var type = DEF.cl.types.findItem('id', model.type);
+					var val = type === 'number' ? 1000 : type === 'date' ? NOW : 'Total DB';
+					new Function('value', model.validate)(val);
+				} catch (e) {
+					SETTER('message/warning', '<b>@(Validation error:)</b> ' + e);
+					return;
+				}
+			}
+
+			model.callback(CLONE(model));
+			hide();
+		};
+
+	});
+
+</script>
