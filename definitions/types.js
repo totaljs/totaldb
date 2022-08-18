@@ -88,6 +88,15 @@ FUNC.types_load = function(callback) {
 				});
 
 			}, function() {
+
+				for (var key in meta) {
+					var type = meta[key];
+					for (var attr of type.attrs) {
+						if (attr.typeid)
+							attr.ref = meta[attr.typeid];
+					}
+				}
+
 				MAIN.types = meta;
 				MAIN.paused = false;
 				callback && callback();
@@ -116,6 +125,9 @@ FUNC.types_configure = function(type) {
 
 	// Default values + validation
 	for (var item of type.attrs) {
+
+		var t = MAIN.datatypes.findItem('id', item.type);
+		item.raw = t ? t.type : 'string';
 
 		if (item.default) {
 			try {

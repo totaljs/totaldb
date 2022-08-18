@@ -174,10 +174,10 @@
 
 			var model = exports.model;
 			var data = {};
+
 			data.sort = sort ? sort.join(',') : null;
 			data.page = page;
-
-			// data.query = [];
+			data.where = [];
 
 			var type = common.types.findItem('id', model.id);
 
@@ -201,12 +201,16 @@
 						case 'photo':
 						case 'type':
 						case 'user':
-							data[key] = '%' + filter[key] + '%';
+							data.where.push(key + '=' + encodeURIComponent('%' + filter[key] + '%'));
 							break;
 					}
 				} else if (key === 'id' || key === 'name')
-					data[key] = '%' + filter[tmp] + '%';
+					data.where.push(key + '=' + encodeURIComponent('%' + filter[key] + '%'));
+				else
+					data.where.push(key + '=' + encodeURIComponent(filter[key]));
 			}
+
+			data.where = data.where.join('&');
 
 			var url = QUERIFY('GET /list/{0}/'.format(ID), data);
 			FUNC.log(url);

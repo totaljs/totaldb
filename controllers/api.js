@@ -40,10 +40,6 @@ exports.install = function() {
 	ROUTE('+GET            /read/{typeid}/{id}/           *Data   --> read');
 	ROUTE('+POST           /save/{typeid}/                *Data   --> check save (response)');
 	ROUTE('+DELETE         /remove/{typeid}/{id}/         *Data   --> remove');
-	ROUTE('+GET            /max/{typeid}/{attrid}/        *Data   --> max');
-	ROUTE('+GET            /min/{typeid}/{attrid}/        *Data   --> min');
-	ROUTE('+GET            /sum/{typeid}/{attrid}/        *Data   --> sum');
-	ROUTE('+GET            /group/{typeid}/{attrid}/      *Data   --> group');
 	ROUTE('+GET            /count/{typeid}/               *Data   --> count');
 	ROUTE('+GET            /types/                        *Data   --> types');
 
@@ -53,10 +49,6 @@ exports.install = function() {
 	ROUTE('+API   /api/    read/{typeid}/{id}             *Data   --> read');
 	ROUTE('+API   /api/    save/{typeid}                  *Data   --> check save (response)');
 	ROUTE('+API   /api/    remove/{typeid}/{id}           *Data   --> remove');
-	ROUTE('+API   /api/    max/{typeid}/{attrid}          *Data   --> max');
-	ROUTE('+API   /api/    min/{typeid}/{attrid}          *Data   --> min');
-	ROUTE('+API   /api/    sum/{typeid}/{attrid}          *Data   --> sum');
-	ROUTE('+API   /api/    group/{typeid}/{attrid}        *Data   --> group');
 	ROUTE('+API   /api/    count/{typeid}                 *Data   --> count');
 	ROUTE('+API   /api/    types                          *Data   --> types');
 
