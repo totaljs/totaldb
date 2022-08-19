@@ -6,6 +6,10 @@ function convert(type, value) {
 	if (type === undefined || type === 'string')
 		return value;
 
+	// Objects are not filterable
+	if (type === 'object')
+		return '';
+
 	if (type === 'number' || type === 'currency')
 		return value.trim().parseFloat();
 
@@ -217,7 +221,7 @@ function makefilter(cache, type, query) {
 	var indexer = 0;
 	var values = {};
 
-	var filter = query.filter.replace(/\[[a-z_\d]+(=|~|<|>)+.*?\]/g, function(text) {
+	var filter = query.filter.replace(/\[[a-z_\d]+(=|\~|<|>)+.*?\]/g, function(text) {
 
 		text = text.substring(1, text.length - 1);
 
@@ -516,7 +520,6 @@ function makefields(cache, type, query) {
 		}
 	}
 
-
 }
 
 function makesort(cache, type, query) {
@@ -531,7 +534,9 @@ function makesort(cache, type, query) {
 
 		var arr = sort.split(' ');
 
-		switch ((arr[1] || '').toUpperCase()) {
+		arr[1] = (arr[1] || '').toUpperCase();
+
+		switch (arr[1]) {
 			case 'ASC':
 			case 'DESC':
 				break;
@@ -557,7 +562,7 @@ function makesort(cache, type, query) {
 
 			var refattr = attr.ref.fields[key2];
 			if (!refattr) {
-				cache.errors.push('query.sort: "{0}" is not defined in the type "{1}"'.format(key, type.ref.id));
+				cache.errors.push('query.sort: "{0}" is not defined in the type "{1}"'.format(key, attr.ref.id));
 				continue;
 			}
 
@@ -616,7 +621,7 @@ function makequery(name, query) {
 }
 
 function notallowed(user, typeid) {
-	if (!user.sa && user.types.length && !user.types.includes(typeid))
+	if (!user.sa && (user.types && user.types.length && !user.types.includes(typeid)))
 		return true;
 }
 
@@ -658,6 +663,8 @@ FUNC.makequery = async function(query, callback) {
 		else
 			parsed.filter = 't1.id=' + PG_ESCAPE(query.id || null);
 	}
+
+	parsed.filter = 't1.isremoved=FALSE' + (parsed.filter ? (' AND ' + parsed.filter) : '');
 
 	var fields = parsed.fields.join(',');
 	var where = parsed.filter ? (' WHERE ' + parsed.filter) : '';
@@ -707,7 +714,6 @@ FUNC.makequery = async function(query, callback) {
 		items = await db.query('SELECT COUNT(1)::int4 AS count FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0].count;
 	}
-
 	if (parsed.map && items instanceof Array) {
 		for (var item of items) {
 			for (var key in item) {

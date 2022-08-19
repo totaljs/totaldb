@@ -2,7 +2,7 @@ NEWSCHEMA('Data', function(schema) {
 
 	schema.define('id', 'String');
 	// schema.define('permissions', '[String]');
-	schema.define('body', 'Object', true);
+	schema.define('data', 'Object', true);
 
 	schema.setQuery(function($) {
 
@@ -27,7 +27,21 @@ NEWSCHEMA('Data', function(schema) {
 
 		$.query.command = 'detail';
 		$.query.id = $.params.id;
-		$.query.typeid = $.params.typeid ;
+		$.query.typeid = $.params.typeid;
+		$.query.user = $.user;
+
+		FUNC.makequery($.query, $.callback);
+	});
+
+	schema.addWorkflow('first', function($) {
+
+		if (!MAIN.ready) {
+			$.invalid(503);
+			return;
+		}
+
+		$.query.command = 'read';
+		$.query.typeid = $.params.typeid;
 		$.query.user = $.user;
 
 		FUNC.makequery($.query, $.callback);
@@ -84,7 +98,7 @@ NEWSCHEMA('Data', function(schema) {
 			}
 		}
 
-		FUNC.types_validate($, $.typeid, operation, model.body, function(err, response) {
+		FUNC.types_validate($, $.typeid, operation, model.data || EMPTYOBJECT, function(err, response) {
 
 			if (err) {
 				$.invalid(err.map(m => m.error));
@@ -112,14 +126,14 @@ NEWSCHEMA('Data', function(schema) {
 
 		var id = model.id;
 		var db = DB();
-		var validated = $.validated || model.body;
+		var validated = $.validated || model.data;
 		var customid;
 		var fields = type.fields;
 
 		NOW = new Date();
 
 		// Name
-		var name = model.body.name || '';
+		var name = model.data.name || '';
 		if (name)
 			name += '';
 
@@ -153,12 +167,12 @@ NEWSCHEMA('Data', function(schema) {
 			}
 
 			validated.dtupdated = NOW;
-			builder = db.modify(type.table, validated).id(id).where('isremoved', false).callback($.done(id));
+			builder = db.modify(type.table, validated).id(id).where('isremoved', false).callback($.successful(() => $.callback(validated.id)));
 
 		} else {
 			validated.id = customid || UID();
 			validated.dtcreated = NOW;
-			builder = db.insert(type.table, validated).callback($.done(validated.id));
+			builder = db.insert(type.table, validated).callback($.successful(() => $.callback(validated.id)));
 		}
 
 		if (PREF.changelog) {
@@ -187,9 +201,6 @@ NEWSCHEMA('Data', function(schema) {
 			return;
 		}
 
-		if (data && data.id)
-			id = data.id;
-
 		if (!$.user.sa && type.permissions && type.permissions.length) {
 			if (!FUNC.types_permit('D', type, $.user)) {
 				$.invalid('permissions');
@@ -200,8 +211,12 @@ NEWSCHEMA('Data', function(schema) {
 		if (type) {
 
 			var db = DB();
+			var response = await db.modify(type.table, { isremoved: true, dtremoved: NOW }).id(id).where('isremoved', false).promise($);
 
-			await db.modify(type.table, { isremoved: true, dtremoved: NOW }).id(id).where('isremoved', false).error(404).promise($);
+			if (!response) {
+				$.callback(null);
+				return;
+			}
 
 			// Clean/Remove related records
 			var remove = [];
@@ -226,13 +241,13 @@ NEWSCHEMA('Data', function(schema) {
 				await db.modify(item.table, obj).where(item.column, id).where('isremoved', false).promise($);
 			}
 
-			$.success(id);
+			$.callback(id);
 
 			if (PREF.changelog)
 				FUNC.changelog('data_remove', { id: id }, null, $);
 
 		} else
-			$.invalid(404);
+			$.callback(null);
 	});
 
 	schema.addWorkflow('types', async function($) {

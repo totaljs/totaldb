@@ -174,5 +174,13 @@
 		"icon": "fa fa-lock",
 		"type": "string",
 		"sortindex": 22
+	},
+	{
+		"id": "object",
+		"name": "Object",
+		"color": "#479798",
+		"icon": "far fa-box-up",
+		"type": "object",
+		"sortindex": 23
 	}
 ]

@@ -444,6 +444,9 @@
 								// value = val ? '1' : '0';
 								value = val;
 								break;
+							case 'object':
+								value = JSON.stringify(val);
+								break;
 							default:
 								value = val;
 								break;

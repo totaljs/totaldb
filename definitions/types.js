@@ -381,7 +381,7 @@ FUNC.types_prepare = async function(item, val, err, parent) {
 					val = null;
 			}
 
-			return val;
+			return JSON.stringify(val);
 
 		case 'number':
 		case 'currency':

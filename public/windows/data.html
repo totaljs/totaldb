@@ -175,7 +175,7 @@
 			var model = exports.model;
 			var data = {};
 
-			data.sort = sort ? sort.join(',') : null;
+			data.sort = sort ? sort.join(',').replace(/_(asc|desc)/, text => ' ' + text.substring(1)) : null;
 			data.page = page;
 			data.where = [];
 

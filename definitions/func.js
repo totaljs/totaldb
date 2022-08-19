@@ -11,6 +11,8 @@ function makepgtype(type) {
 			return 'NUMERIC';
 		case 'boolean':
 			return 'BOOLEAN';
+		case 'object':
+			return 'JSON';
 	}
 	return 'TEXT';
 }

@@ -57,6 +57,8 @@
 									<span data-id="{{ m.id }}" class="value exec" data-exec="?/color">{{ if m.value }}<i class="fas fa-circle" style="color:{{ m.value }}"></i>{{ else }}---{{ fi }}</span>
 									{{ else if m.type === 'boolean' }}
 									<span data-id="{{ m.id }}" class="value exec checkbox{{ if m.value }} checked{{ fi }}" data-exec="?/checkbox"><i class="fas fa-check"></i></span>
+									{{ else if m.type === 'object' }}
+									<span data-id="{{ m.id }}" class="value"><code>{{ m.value | jsonformat }}</code></span>
 									{{ else }}
 									<span data-id="{{ m.id }}" class="value edit{{ if m.id === 'name' }} b{{ fi }}" data-edit="exec:?/save;selectall:1;{{ if m.required }}required:1{{ fi }}">{{ m.value | empty }}</span>
 									{{ fi }}
@@ -192,17 +194,17 @@
 			var type = common.types.findItem('id', ID[0]);
 
 			data.id = ID[1];
-			data.body = {};
+			data.data = {};
 
 			for (var item of model.attrs) {
 				if (type.options.ispartial) {
 					if (item.prev !== item.value) {
-						data.body[item.id] = item.value;
+						data.data[item.id] = item.value;
 						item.prev = item.value;
 						is = true;
 					}
 				} else {
-					data.body[item.id] = item.value;
+					data.data[item.id] = item.value;
 					item.prev = item.value;
 					is = true;
 				}

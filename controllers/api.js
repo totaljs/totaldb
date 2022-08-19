@@ -37,6 +37,7 @@ exports.install = function() {
 	// Public REST API
 	ROUTE('+GET            /list/{typeid}/                *Data   --> query');
 	ROUTE('+GET            /find/{typeid}/                *Data   --> find');
+	ROUTE('+GET            /first/{typeid}/               *Data   --> first');
 	ROUTE('+GET            /read/{typeid}/{id}/           *Data   --> read');
 	ROUTE('+POST           /save/{typeid}/                *Data   --> check save (response)');
 	ROUTE('+DELETE         /remove/{typeid}/{id}/         *Data   --> remove');
@@ -44,13 +45,14 @@ exports.install = function() {
 	ROUTE('+GET            /types/                        *Data   --> types');
 
 	// Public Total.js API
-	ROUTE('+API   /api/    list/{typeid}                  *Data   --> query');
-	ROUTE('+API   /api/    find/{typeid}                  *Data   --> find');
-	ROUTE('+API   /api/    read/{typeid}/{id}             *Data   --> read');
-	ROUTE('+API   /api/    save/{typeid}                  *Data   --> check save (response)');
-	ROUTE('+API   /api/    remove/{typeid}/{id}           *Data   --> remove');
-	ROUTE('+API   /api/    count/{typeid}                 *Data   --> count');
-	ROUTE('+API   /api/    types                          *Data   --> types');
+	ROUTE('+API   /api/    -list/{typeid}                 *Data   --> query');
+	ROUTE('+API   /api/    -find/{typeid}                 *Data   --> find');
+	ROUTE('+API   /api/    -first/{typeid}                *Data   --> first');
+	ROUTE('+API   /api/    -read/{typeid}/{id}            *Data   --> read');
+	ROUTE('+API   /api/    +save/{typeid}                 *Data   --> check save (response)');
+	ROUTE('+API   /api/    -remove/{typeid}/{id}          *Data   --> remove');
+	ROUTE('+API   /api/    -count/{typeid}                *Data   --> count');
+	ROUTE('+API   /api/    -types                         *Data   --> types');
 
 };
 

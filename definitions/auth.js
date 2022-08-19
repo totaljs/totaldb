@@ -8,7 +8,7 @@ AUTH(function($) {
 	}
 
 	if ($.url !== '/') {
-		var token = $.headers['x-token'];
+		var token = $.headers['x-token'] || $.req.query.token;
 		if (token) {
 			token = MAIN.tokens[token];
 			if (token) {
