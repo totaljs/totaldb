@@ -44,7 +44,8 @@
 		<div class="body">
 			@{foreach m in MAIN.types}
 			<figure>
-				<div class="name" id="@{m.value.id}"><code style="float:right">@{m.key}</code>@{m.value.name}</div>
+				<code style="float:right;color:#E73323">@{m.key}</code>
+				<div class="name" id="@{m.value.id}">@{m.value.name}</div>
 				<div>
 					<table>
 						@{foreach attr in m.value.attrs}
