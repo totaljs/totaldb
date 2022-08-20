@@ -47,6 +47,21 @@ NEWSCHEMA('Data', function(schema) {
 		FUNC.makequery($.query, $.callback);
 	});
 
+	schema.addWorkflow('exists', function($) {
+
+		if (!MAIN.ready) {
+			$.invalid(503);
+			return;
+		}
+
+		$.query.command = 'check';
+		$.query.typeid = $.params.typeid;
+		$.query.user = $.user;
+		$.query.fields = 'id';
+
+		FUNC.makequery($.query, $.callback);
+	});
+
 	schema.addWorkflow('find', function($) {
 
 		if (!MAIN.ready) {

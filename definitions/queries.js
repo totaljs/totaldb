@@ -707,6 +707,9 @@ FUNC.makequery = async function(query, callback) {
 	} else if (query.command === 'read') {
 		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0] || null;
+	} else if (query.command === 'check') {
+		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
+		response = items[0] ? true : false;
 	} else if (query.command === 'detail') {
 		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0] || null;

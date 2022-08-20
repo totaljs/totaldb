@@ -40,6 +40,7 @@ exports.install = function() {
 	ROUTE('+GET            /find/{typeid}/                *Data   --> find');
 	ROUTE('+GET            /first/{typeid}/               *Data   --> first');
 	ROUTE('+GET            /read/{typeid}/{id}/           *Data   --> read');
+	ROUTE('+GET            /check/{typeid}/               *Data   --> exists');
 	ROUTE('+POST           /save/{typeid}/                *Data   --> check save (response)');
 	ROUTE('+DELETE         /remove/{typeid}/{id}/         *Data   --> remove');
 	ROUTE('+GET            /count/{typeid}/               *Data   --> count');
@@ -49,6 +50,7 @@ exports.install = function() {
 	ROUTE('+API   /api/    -list/{typeid}                 *Data   --> query');
 	ROUTE('+API   /api/    -find/{typeid}                 *Data   --> find');
 	ROUTE('+API   /api/    -first/{typeid}                *Data   --> first');
+	ROUTE('+API   /api/    -check/{typeid}                *Data   --> exists');
 	ROUTE('+API   /api/    -read/{typeid}/{id}            *Data   --> read');
 	ROUTE('+API   /api/    +save/{typeid}                 *Data   --> check save (response)');
 	ROUTE('+API   /api/    -remove/{typeid}/{id}          *Data   --> remove');
