@@ -94,7 +94,6 @@ FUNC.reconfigure = function(callback) {
 		return;
 	}
 
-	CONF.name = PREF.name;
 	MAIN.ready = false;
 
 	require('querybuilderpg').init('default', PREF.db, PREF.pools || 0);
