@@ -675,6 +675,9 @@ FUNC.makequery = async function(query, callback) {
 	var groupby = parsed.group.length ? (' GROUP BY ' + parsed.group.join(', ')) : '';
 	var db = DB();
 
+	if (!groupby && !sort && (query.command === 'find' || query.command === 'list'))
+		sort = ' ORDER BY t1.dtcreated DESC';
+
 	query.page = query.page ? U.parseInt(query.page) : 1;
 	query.limit = query.limit ? U.parseInt(query.limit) : 100;
 
