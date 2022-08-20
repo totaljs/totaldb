@@ -114,7 +114,7 @@ FUNC.types_configure = function(type) {
 		type.fields[attr.id] = attr;
 
 	type.fields.id = { id: 'id', name: 'ID', type: 'string' };
-	type.fields.name = { id: 'name', type: 'string', name: 'Name', required: true, name: 'name' };
+	type.fields.name = { id: 'name', type: 'string', name: 'Name', required: true };
 	type.fields.dtcreated = { id: 'dtcreated', name: 'Created', type: 'date' };
 	type.fields.dtupdated = { id: 'dtupdated', name: 'Updated', type: 'date' };
 
