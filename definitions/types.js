@@ -113,10 +113,10 @@ FUNC.types_configure = function(type) {
 	for (var attr of type.attrs)
 		type.fields[attr.id] = attr;
 
-	type.fields.id = { id: 'id', type: 'string' };
-	type.fields.name = { id: 'name', type: 'string', required: true, name: 'name' };
-	type.fields.dtcreated = { id: 'dtcreated', type: 'date' };
-	type.fields.dtupdated = { id: 'dtupdated', type: 'date' };
+	type.fields.id = { id: 'id', name: 'ID', type: 'string' };
+	type.fields.name = { id: 'name', type: 'string', name: 'Name', required: true, name: 'name' };
+	type.fields.dtcreated = { id: 'dtcreated', name: 'Created', type: 'date' };
+	type.fields.dtupdated = { id: 'dtupdated', name: 'Updated', type: 'date' };
 
 	type.attrs.push(type.fields.id);
 	type.attrs.push(type.fields.name);
@@ -128,6 +128,7 @@ FUNC.types_configure = function(type) {
 
 		var t = MAIN.datatypes.findItem('id', item.type);
 		item.raw = t ? t.type : 'string';
+		item.datatype = t;
 
 		if (item.default) {
 			try {

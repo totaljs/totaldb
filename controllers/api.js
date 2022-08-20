@@ -3,6 +3,7 @@ exports.install = function() {
 	ROUTE('+GET    /', 'index');
 	ROUTE('-GET    /', 'login');
 	ROUTE('+GET    /logout/', logout);
+	ROUTE('+GET    /docs/', 'docs');
 
 	ROUTE('+POST   /internal/restore/', restore, ['upload', 60 * 1000 * 5], 1024 * 500);
 
@@ -13,20 +14,20 @@ exports.install = function() {
 	ROUTE('+SOCKET /sync/', socket);
 
 	// Types
-	ROUTE('+API    /    -auth                         *Auth           --> read');
-	ROUTE('+API    /    -types                        *Types          --> query');
-	ROUTE('+API    /    -types_count                  *Types          --> count');
-	ROUTE('+API    /    +types_save                   *Types          --> save');
-	ROUTE('+API    /    -types_read/{id}              *Types          --> read');
-	ROUTE('+API    /    -types_remove/{id}            *Types          --> remove');
-	ROUTE('+API    /    -types_clear                  *Types          --> clear');
-	ROUTE('+API    /    +types_offset                 *Types/Offset   --> save');
-	ROUTE('+API    /    -cl                           *Types          --> cl');
-	ROUTE('+API    /    +config_save                  *Config         --> save');
-	ROUTE('+API    /    -config_read                  *Config         --> read');
-	ROUTE('+API    /    -check                        *Config         --> check');
-	ROUTE('+API    /    -maintenance                  *Database       --> maintenance');
-	ROUTE('+API    /    -data_export/{typeid}/{id}    *Data           --> export');
+	ROUTE('+API    /       -auth                          *Auth           --> read');
+	ROUTE('+API    /       -types                         *Types          --> query');
+	ROUTE('+API    /       -types_count                   *Types          --> count');
+	ROUTE('+API    /       +types_save                    *Types          --> save');
+	ROUTE('+API    /       -types_read/{id}               *Types          --> read');
+	ROUTE('+API    /       -types_remove/{id}             *Types          --> remove');
+	ROUTE('+API    /       -types_clear                   *Types          --> clear');
+	ROUTE('+API    /       +types_offset                  *Types/Offset   --> save');
+	ROUTE('+API    /       -cl                            *Types          --> cl');
+	ROUTE('+API    /       +config_save                   *Config         --> save');
+	ROUTE('+API    /       -config_read                   *Config         --> read');
+	ROUTE('+API    /       -check                         *Config         --> check');
+	ROUTE('+API    /       -maintenance                   *Database       --> maintenance');
+	ROUTE('+API    /       -data_export/{typeid}/{id}     *Data           --> export');
 
 	// Tokens
 	ROUTE('+API    /       -tokens                        *Tokens   --> query');

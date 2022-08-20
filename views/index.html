@@ -22,7 +22,7 @@
 	<div data---="LAZY datepicker"></div>
 	<div data---="LAZY approve"></div>
 	<div data---="LAZY menu"></div>
-	<div data---="LAZY notifybar"></div>
+	<div data---="LAZY notify__null__position:bottom right"></div>
 	<div data---="LAZY clipboard"></div>
 	<div data---="LAZY message__null__style:2"></div>
 	<div data---="LAZY fileuploader"></div>
@@ -308,8 +308,8 @@
 								response.collection = 'type';
 								delete response.dtremoved;
 								delete response.isremoved;
-								SETTER('notifybar/success', '@(Copied)');
 								SETTER('clipboard/copy', STRINGIFY(response));
+								SETTER('notify/success', '@(Copied)');
 							}));
 							break;
 					}
@@ -330,7 +330,7 @@
 
 			exports.copy = function(el) {
 				SETTER('clipboard/copy', el.text());
-				SETTER('notifybar/success', '@(Copied)');
+				SETTER('notify/success', '@(Copied)');
 			};
 
 			exports.browse = function(el) {
@@ -482,6 +482,7 @@
 
 				if (common.ready) {
 					opt.items.push({ id: 'tokens', name: '@(API Tokens)', icon: 'far fa-plug' });
+					opt.items.push({ id: 'docs', name: '@(Generate help)', icon: 'far fa-book' });
 					opt.items.push('-');
 					opt.items.push({ id: 'export', name: '@(Export types)', icon: 'far fa-cloud-download' });
 					opt.items.push({ id: 'exportall', name: '@(Export types + data)', icon: 'far fa-cloud-download' });
@@ -500,6 +501,10 @@
 				SETTER('menu/show', opt);
 			};
 
+			exports.docs = function() {
+				W.open('/docs/');
+			};
+
 			exports.config = function() {
 				TAPI('config_read', ERROR(function(response) {
 					SET('formconfig @reset', response);
@@ -510,7 +515,7 @@
 			exports.maintenance = function() {
 				SETTER('approve/show', '@(Are you sure you want to run maintenance on the database? The app will remove all removed records and perform VACUUM.)', '"far fa-wrench" @(Continue)', function() {
 					TAPI('maintenance @showloading', ERROR(function() {
-						SETTER('notifybar/success @hideloading', '@(Maintenance has been finished)');
+						SETTER('notify/success @hideloading', '@(Maintenance has been finished)');
 					}));
 				});
 			};
@@ -543,7 +548,7 @@
 						return;
 					}
 
-					SETTER('notifybar/success', '@(Import has been finished)');
+					SETTER('notify/success', '@(Import has been finished)');
 					EXEC('?/refresh');
 				};
 

@@ -1,0 +1,66 @@
+@{layout('')}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>@{PREF.name}</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+	<meta name="robots" content="all,follow" />
+
+	<style>
+		html, body { font-family: Arial; font-size: 14px; padding: 0; margin: 0; background-color: #FFF; }
+		.content { display: flex; justify-content: space-between; max-width: 900px; width: 100%; margin: 50px auto; }
+		figure:first-child { margin-top: 0; }
+		figure { margin: 20px auto; width: 100%; display: block; }
+		figure .name { font-weight: bold; margin-bottom: 10px; font-size: 16px; }
+		figure table { width: 100%; border-collapse: collapse; font-size: 12px; }
+		figure table td { width: 33.33%; border: 1px solid #E0E0E0; padding: 5px; }
+		figure code { font-family: Menlo,Consolas,monospace; }
+		figure td code { font-size: 11px; }
+		.body { width: 70%; }
+		.label { font-weight: bold; margin-bottom: 10px; font-size: 16px; }
+		.links { width: 25%; }
+		.links > div { position: sticky; top: 30px; }
+	</style>
+
+</head>
+<body>
+	<br />
+	<div class="content">
+		<div class="links">
+			<div>
+				<div class="label">List of types</div>
+				<ul>
+				@{foreach m in MAIN.types}
+					<li><a href="#@{m.value.id}">@{m.value.name}</a></li>
+				@{end}
+				</ul>
+			</div>
+		</div>
+		<div class="body">
+			@{foreach m in MAIN.types}
+			<figure>
+				<div class="name" id="@{m.value.id}"><code style="float:right">@{m.key}</code>@{m.value.name}</div>
+				<div>
+					<table>
+						@{foreach attr in m.value.attrs}
+							<tr@{if attr.required} style="background-color:#fbeef1"@{fi}>
+								<td>@{attr.name}</td>
+								<td><code><b>@{attr.id}</b></code></td>
+								<td style="background-color:#F8F8F8"><code>@{if attr.typeid}<a href="#@{attr.ref.id}">@{attr.ref.name}</a> @{attr.ref.id}@{else}@{attr.datatype.name}@{fi}</code></td>
+							</tr>
+						@{end}
+					</table>
+				</div>
+			</figure>
+			@{end}
+		</div>
+		<br />
+	</div>
+
+</body>
+</html>

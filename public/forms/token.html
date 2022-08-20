@@ -33,11 +33,12 @@
 			var model = exports.model;
 			var id = model ? model.id : null;
 			com.reconfigure({ title: id ? '@(Update token)' : '@(Create token)' });
-			SET('%showtoken', false);
+			SET('%showtoken', !id);
 		};
 
 		exports.copy = function() {
 			SETTER('clipboard/copy', exports.model.token);
+			SETTER('notify/success', '@(Copied)');
 		};
 
 		exports.show = function() {

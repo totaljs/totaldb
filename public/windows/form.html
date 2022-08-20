@@ -319,6 +319,7 @@
 				data[attr.id] = attr.value;
 
 			SETTER('clipboard/copy', JSON.stringify(data, null, '\t'));
+			SETTER('notify/success', '@(Copied)');
 		};
 
 		exports.validate = function() {
@@ -327,6 +328,7 @@
 
 		exports.copy = function(el) {
 			SETTER('clipboard/copy', el.parent().find('code').text());
+			SETTER('notify/success', '@(Copied)');
 		};
 
 	});

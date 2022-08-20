@@ -138,6 +138,7 @@
 
 		exports.copy = function(el) {
 			SETTER('clipboard/copy', el.parent().find('code').text());
+			SETTER('notify/success', '@(Copied)');
 		};
 
 		exports.copyjson = function(el) {
@@ -157,7 +158,7 @@
 				}));
 			}, function() {
 				SETTER('loading/hide');
-				SETTER('notifybar/success', '@(Copied)');
+				SETTER('notify/success', '@(Copied)');
 				SETTER('clipboard/copy', STRINGIFY(arr));
 			});
 
