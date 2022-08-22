@@ -17,8 +17,7 @@
 									<span class="gray mr10 fs12">{{ m.dtcreated | format('[date]') }}</span>
 									<span class="exec red" data-exec="?/remove" data-prevent="true"><i class="far fa-trash-alt"></i></span>
 								</div>
-									<span class="exec mr10" data-exec="?/copy" title="@(Copy token to the clipboard)" data-prevent="true"><i class="far fa-copy"></i></span>{{ m.name }}
-								</div>
+								<span class="exec mr10 blue" data-exec="?/copy" title="@(Copy token to the clipboard)" data-prevent="true"><i class="far fa-copy"></i></span>{{ m.name }}
 							</section>
 						</figure>
 						{{ end }}
@@ -63,7 +62,8 @@
 		exports.copy = function(el) {
 			var id = ATTRD(el);
 			var item = exports.model.items.findItem('id', id);
-			SETTER('clipboard/copy', item.token);
+			SETTER('clipboard/copy', location.origin + '/api/?token=' + item.token);
+			SETTER('notify/success', '@(Copied)');
 		};
 
 		exports.create = function() {

@@ -182,7 +182,7 @@ NEWSCHEMA('Data', function(schema) {
 			}
 
 			validated.dtupdated = NOW;
-			builder = db.modify(type.table, validated).id(id).where('isremoved', false).callback($.successful(() => $.callback(validated.id)));
+			builder = db.modify(type.table, validated).id(id).where('isremoved', false).callback($.successful(() => $.callback(id)));
 
 		} else {
 			validated.id = customid || UID();
@@ -272,9 +272,16 @@ NEWSCHEMA('Data', function(schema) {
 			return;
 		}
 
-		var items = await DB().find('tbl_type').fields('id,name,singular,color,icon,category,attrs,options').promise();
+		var builder = DB().find('tbl_type').fields('id,name,singular,color,icon,category,attrs,options');
+		var types = Object.keys($.user.types);
+
+		if (types.length)
+			builder.in('id', types);
+
+		var items = await builder.promise($);
 
 		for (var item of items) {
+
 			for (var attr of item.attrs) {
 				attr.default = undefined;
 				attr.note = undefined;

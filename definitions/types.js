@@ -261,6 +261,9 @@ FUNC.types_prepare = async function(item, val, err, parent) {
 				}
 			}
 
+			if (item.max && val.length > item.max)
+				val = val.substring(0, item.max);
+
 			if (!isdef && item.required) {
 				if (item.validate) {
 					tmp = item.validate(val);
