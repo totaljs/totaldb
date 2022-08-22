@@ -2,13 +2,14 @@
 	.dataform table.attrs { width: 100%; font-size: 13px; }
 	.dataform table.attrs td { padding: 6px 0; border-top: 1px solid #E0E0E0; }
 	.dataform table.attrs td:last-child { padding-left: 8px; padding-right: 8px; }
-	.dataform table.attrs td:first-child { width: 30%; }
+	.dataform table.attrs td:first-child { width: 30%; vertical-align: top; }
 	.dataform table.attrs td.modified { background-color: #F8F8F8; }
 	.dataform .value { min-width: 10px; position: relative; display: inline-block; outline: 0; min-height: 12px; }
 	.dataform .checkbox { width: 16px; height: 16px; text-align: center; line-height: 15px; border: 1px solid #E0E0E0; border-radius: 3px; cursor: pointer; font-size: 11px; background-color: #FFF; }
 	.dataform .checkbox i { visibility: hidden; color: var(--color); }
 	.dataform .checkbox.checked { background: var(--color); border-color: var(--color); }
 	.dataform .checkbox.checked i { visibility: visible; color: #FFF; }
+	.dataform .multiline { position: relative; display: inline-block; white-space: break-spaces; }
 </style>
 
 <div data-scope="~PATH~ dataform__init:?/init" class="dataform">
@@ -59,6 +60,8 @@
 									<span data-id="{{ m.id }}" class="value exec checkbox{{ if m.value }} checked{{ fi }}" data-exec="?/checkbox"><i class="fas fa-check"></i></span>
 									{{ else if m.type === 'object' }}
 									<span data-id="{{ m.id }}" class="value"><code>{{ m.value | jsonformat }}</code></span>
+									{{ else if m.type === 'multiline' }}
+									<span data-id="{{ m.id }}" class="value edit multiline" data-edit="exec:?/save;selectall:1;multiline:1;{{ if m.required }}required:1{{ fi }}">{{ m.value | empty }}</span>
 									{{ else }}
 									<span data-id="{{ m.id }}" class="value edit{{ if m.id === 'name' }} b{{ fi }}" data-edit="exec:?/save;selectall:1;{{ if m.required }}required:1{{ fi }}">{{ m.value | empty }}</span>
 									{{ fi }}

@@ -43,7 +43,8 @@ tr td { white-space: nowrap; text-overflow: ellipsis; white-space: nowrap; overf
 .flowtype .rows, .flowtype .id { font-size: 11px; color: #777; }
 .flowtype .rows i, .flowtype .id i { margin-right: 4px; width: 12px; text-align: center; }
 .flowtype nav { margin: 5px 0 0; }
-.flowtype nav button { width: 50%; font-size: 11px; border: 0; padding: 5px 0; }
+.flowtype nav button { width: 50%; font-size: 11px; border: 0; padding: 5px 0; background-color: #F0F0F0; }
+.flowtype nav button:hover { background-color: #E9E9E9; }
 .flowtype nav button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
 .flowtype nav button:last-child { border-radius: 0 var(--radius) var(--radius) 0; border-left: 1px solid #E0E0E0; }
 .flowtype nav button i { margin-right: 5px; }
