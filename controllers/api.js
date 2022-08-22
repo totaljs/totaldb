@@ -3,7 +3,8 @@ exports.install = function() {
 	ROUTE('+GET    /', 'index');
 	ROUTE('-GET    /', 'login');
 	ROUTE('+GET    /logout/', logout);
-	ROUTE('+GET    /docs/', 'docs');
+	ROUTE('+GET    /docs/', docs);
+	ROUTE('+GET    /docs/{id}/', docs);
 
 	ROUTE('+POST   /internal/restore/', restore, ['upload', 60 * 1000 * 5], 1024 * 500);
 
@@ -72,4 +73,21 @@ function logout() {
 
 function restore() {
 	EXEC('-Types --> restore', null, this.callback(), this);
+}
+
+function docs(id) {
+	var items = id ? MAIN.types[id] : MAIN.types;
+	if (items == null)
+		this.invalid(404);
+	else {
+
+		var model;
+		if (id) {
+			model = {};
+			model[id] = items;
+		} else
+			model = items;
+
+		this.view('docs', { all: !!id, items: model });
+	}
 }

@@ -35,14 +35,14 @@
 			<div>
 				<div class="label">List of types</div>
 				<ul>
-				@{foreach m in MAIN.types}
+				@{foreach m in model.items}
 					<li><a href="#@{m.value.id}">@{m.value.name}</a></li>
 				@{end}
 				</ul>
 			</div>
 		</div>
 		<div class="body">
-			@{foreach m in MAIN.types}
+			@{foreach m in model.items}
 			<figure>
 				<code style="float:right;color:#E73323">@{m.key}</code>
 				<div class="name" id="@{m.value.id}">@{m.value.name}</div>
