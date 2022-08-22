@@ -712,7 +712,10 @@ FUNC.makequery = async function(query, callback) {
 		response = items[0] || null;
 	} else if (query.command === 'check') {
 		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
-		response = items[0] ? true : false;
+		response = items[0] ? items[0].id : null;
+	} else if (query.command === 'key') {
+		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
+		response = items[0] ? items[0].id : null;
 	} else if (query.command === 'detail') {
 		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0] || null;

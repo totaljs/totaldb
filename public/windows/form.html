@@ -196,18 +196,18 @@
 
 			var type = common.types.findItem('id', ID[0]);
 
+			data = {};
 			data.id = ID[1];
-			data.data = {};
 
 			for (var item of model.attrs) {
 				if (type.options.ispartial) {
 					if (item.prev !== item.value) {
-						data.data[item.id] = item.value;
+						data[item.id] = item.value;
 						item.prev = item.value;
 						is = true;
 					}
 				} else {
-					data.data[item.id] = item.value;
+					data[item.id] = item.value;
 					item.prev = item.value;
 					is = true;
 				}

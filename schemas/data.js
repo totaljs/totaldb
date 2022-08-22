@@ -1,8 +1,8 @@
 NEWSCHEMA('Data', function(schema) {
 
-	schema.define('id', 'String');
+	// schema.define('id', 'String');
 	// schema.define('permissions', '[String]');
-	schema.define('data', 'Object', true);
+	// schema.define('data', 'Object', true);
 
 	schema.setQuery(function($) {
 
@@ -113,7 +113,7 @@ NEWSCHEMA('Data', function(schema) {
 			}
 		}
 
-		FUNC.types_validate($, $.typeid, operation, model.data || EMPTYOBJECT, function(err, response) {
+		FUNC.types_validate($, $.typeid, operation, model || EMPTYOBJECT, function(err, response) {
 
 			if (err) {
 				$.invalid(err.map(m => m.error));
@@ -139,16 +139,16 @@ NEWSCHEMA('Data', function(schema) {
 			return;
 		}
 
-		var id = model.id;
 		var db = DB();
-		var validated = $.validated || model.data;
+		var validated = $.validated || model;
 		var customid;
 		var fields = type.fields;
+		var id = validated.id;
 
 		NOW = new Date();
 
 		// Name
-		var name = model.data.name || '';
+		var name = validated.name || '';
 		if (name)
 			name += '';
 
