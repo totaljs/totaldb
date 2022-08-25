@@ -296,6 +296,41 @@ NEWSCHEMA('Data', function(schema) {
 		$.callback(items);
 	});
 
+	schema.addWorkflow('attrs', async function($) {
+
+		if (MAIN.paused || !MAIN.ready) {
+			$.invalid(503);
+			return;
+		}
+
+		if (!$.user.sa && $.user.types[$.id]) {
+			$.callback(EMPTYARRAY);
+			return;
+		}
+
+		var item = await DB().read('tbl_type').fields('id,attrs').id($.id).promise($);
+
+		if (!item) {
+			$.callback(EMPTYARRAY);
+			return;
+		}
+
+		var arr = [];
+
+		for (var attr of item.attrs) {
+			attr.default = undefined;
+			attr.note = undefined;
+			attr.permissions = undefined;
+			attr.alias = undefined;
+			attr.locked = undefined;
+			attr.sortindex = undefined;
+			attr.verify = undefined;
+			arr.push(attr);
+		}
+
+		$.callback(arr);
+	});
+
 	schema.addWorkflow('export', function($) {
 
 		if (!MAIN.ready) {

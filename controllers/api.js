@@ -1,5 +1,7 @@
 exports.install = function() {
 
+	CORS();
+
 	ROUTE('+GET    /', 'index');
 	ROUTE('-GET    /', 'login');
 	ROUTE('+GET    /logout/', logout);
@@ -46,6 +48,7 @@ exports.install = function() {
 	ROUTE('+DELETE         /remove/{typeid}/{id}/         *Data   --> remove');
 	ROUTE('+GET            /count/{typeid}/               *Data   --> count');
 	ROUTE('+GET            /types/                        *Data   --> types');
+	ROUTE('+GET            /attrs/{typeid}/               *Data   --> attrs');
 
 	// Public Total.js API
 	ROUTE('+API   /api/    -list/{typeid}                 *Data   --> query');
@@ -57,6 +60,7 @@ exports.install = function() {
 	ROUTE('+API   /api/    -remove/{typeid}/{id}          *Data   --> remove');
 	ROUTE('+API   /api/    -count/{typeid}                *Data   --> count');
 	ROUTE('+API   /api/    -types                         *Data   --> types');
+	ROUTE('+API   /api/    -attrs/{typeid}                *Data   --> attrs');
 
 };
 
