@@ -269,6 +269,9 @@ function makefilter(cache, type, query) {
 
 			if (t.typeid) {
 
+				if (!key2)
+					key2 = 'id';
+
 				var refattr = t.ref.fields[key2];
 				if (!refattr) {
 					cache.errors.push('query.filter: "{0}" is not defined in the type "{1}"'.format(key, t.typeid));
@@ -566,7 +569,7 @@ function makesort(cache, type, query) {
 				continue;
 			}
 
-			if (notallowed(query.user, type.ref.id))
+			if (type.ref && notallowed(query.user, type.ref.id))
 				continue;
 
 			// Makes a relation
@@ -674,6 +677,8 @@ FUNC.makequery = async function(query, callback) {
 	var response;
 	var groupby = parsed.group.length ? (' GROUP BY ' + parsed.group.join(', ')) : '';
 	var db = DB();
+
+	console.log(sort);
 
 	if (!groupby && !sort && (query.command === 'find' || query.command === 'list'))
 		sort = ' ORDER BY t1.dtcreated DESC';

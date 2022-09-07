@@ -40,8 +40,8 @@
 					<table class="attrs">
 						<tbody>
 						{{ foreach m in value }}
-							<tr>
-								<td title="{{ m.id }}">{{ m.name }}</td>
+							<tr title="{{ m.id }}">
+								<td>{{ m.name }}</td>
 								<td>
 									{{ if m.type === 'date' }}
 									<span data-id="{{ m.id }}" class="value exec" data-exec="?/date">{{ m.value | format('[ts]') | empty }}</span>

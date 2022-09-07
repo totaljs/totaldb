@@ -168,7 +168,7 @@
 			EXEC('common/detail', ID);
 		};
 
-		exports.filter = function(type, filter, sort, page) {
+		exports.filter = function(gtype, filter, sort, page) {
 
 			if (!filter)
 				filter = {};
@@ -218,7 +218,7 @@
 			AJAX(url, function(response) {
 				var data = PLUGINS.common.prepare(ID, response.items);
 				response.items = data.body;
-				SET('?.response', response, type === 'refresh' ? 'noscroll' : null);
+				SET('?.response', response, gtype === 'refresh' ? 'noscroll' : null);
 			});
 
 		};

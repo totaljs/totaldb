@@ -478,18 +478,32 @@ FUNC.types_validate = async function($, typeid, operation, model, callback) {
 	var output = {};
 	var errors = [];
 	var fields = type.fields;
+	var keys = {};
 
-	for (var key in fields) {
+	for (var k in model) {
 
+		var key = k;
 		var value = model[key];
+
+		switch (key[0]) {
+			case '+':
+			case '-':
+			case '*':
+			case '/':
+			case '!':
+			case '>':
+			case '<':
+				key = key.substring(1);
+				break;
+		}
+
+		if (!fields[key])
+			continue;
+
+		keys[key] = 1;
+
 		var field = fields[key];
 		var valid = null;
-
-		// Skip if partial and value is not provided
-		if (type.options.ispartial) {
-			if (value === undefined)
-				continue;
-		}
 
 		if (field.array) {
 
@@ -512,7 +526,16 @@ FUNC.types_validate = async function($, typeid, operation, model, callback) {
 		} else
 			valid = await FUNC.types_prepare(field, value, errors, null, false);
 
-		output[key] = valid;
+		output[k] = valid;
+	}
+
+	if (!type.options.ispartial) {
+		for (var k in fields) {
+			if (!keys[k]) {
+				var item = fields[k];
+				errors.push({ name: item.name, path: path, error: (item.error || 'Value of "{0}" is invalid').format(item.name) });
+			}
+		}
 	}
 
 	// Cleanup
