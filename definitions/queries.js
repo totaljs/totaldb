@@ -261,7 +261,7 @@ function makefilter(cache, type, query) {
 
 			var t = type.fields[key];
 			if (!t) {
-				cache.errors.push('query.filter: "{0}" is not defined in the type "{1}"'.format(key, name));
+				cache.errors.push('query.filter: "{0}" is undefined'.format(key));
 				return '';
 			}
 
@@ -445,6 +445,7 @@ function makefields(cache, type, query) {
 
 			scalar = key.substring(0, index).toUpperCase();
 			key = key.substring(index + 1, key.length - 1);
+			console.log('===>', scalar, key);
 		}
 
 		index = key.indexOf('_');
@@ -491,7 +492,9 @@ function makefields(cache, type, query) {
 				check[tmp] = [alias, attr.ref.id];
 
 		} else {
+
 			attr = type.fields[key];
+			console.log('--->', scalar, groups, key);
 
 			if (!scalar && groups && !groups[key]) {
 				cache.errors.push('query.fields: "{0}" is not included in the query.group'.format(key));
@@ -502,8 +505,15 @@ function makefields(cache, type, query) {
 				if (scalar) {
 					var retype = scalar === 'COUNT' || attr.raw === 'number' ? '::numeric' : '';
 					cache.fields.push(scalar + '(t1.' + key + ')' + retype + ' AS ' + key);
-				} else
+				} else {
+
+					if (attr.ref) {
+						fields.push(key + '_name', key + '_id');
+						continue;
+					}
+
 					cache.fields.push('t1.' + key);
+				}
 			} else
 				cache.errors.push('query.fields: "{0}" is not defined in the type "{1}"'.format(key, type.id));
 		}
@@ -677,8 +687,6 @@ FUNC.makequery = async function(query, callback) {
 	var response;
 	var groupby = parsed.group.length ? (' GROUP BY ' + parsed.group.join(', ')) : '';
 	var db = DB();
-
-	console.log(sort);
 
 	if (!groupby && !sort && (query.command === 'find' || query.command === 'list'))
 		sort = ' ORDER BY t1.dtcreated DESC';

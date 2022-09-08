@@ -10,7 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
 	<meta name="robots" content="all,follow" />
 	<link rel="stylesheet" href="@{'%cdn'}/spa.min@19pro.css" />
-	<script src="@{'%cdn'}/spa.min@19beta.js"></script>
+	<script src="@{'%cdn'}/spa.min@19.js"></script>
 	@{import('meta', 'head', 'ui.js', 'default.css', 'favicon.ico')}
 </head>
 <body data---="exec">
@@ -45,6 +45,7 @@
 				<span class="exec" data-exec="common/create" title="@(New type)"><i class="far fa-plus-circle green"></i></span>
 				<span class="exec" data-exec="common/tokens" title="@(Tokens)"><i class="far fa-plug"></i></span>
 				<hr />
+				<span class="exec" data-exec="common/querybuilder" title="@(Query Builder)"><i class="far fa-file-search"></i></span>
 				<span class="exec" data-exec="common/nodes" title="@(Active types)"><i class="far fa-list"></i></span>
 			</nav>
 		</section>
@@ -77,7 +78,7 @@
 			{{ fi }}
 			<div class="name b hellip"><i class="{{ value.icon | empty('fas fa-database') }}"{{ if value.color }} style="color:{{ value.color }}"{{ fi }}></i>{{ value.title }}</div>
 			<div class="note">{{ value.note }}</div>
-			<div class="id exec" data-exec="?/copy"><i class="far fa-copy"></i>{{ value.id }}</div>
+			<div class="id exec" data-exec="common/copy"><i class="far fa-copy"></i>{{ value.id }}</div>
 			<div class="rows"><i class="far fa-calculator"></i><span data-bind="common.cache.{{ value.id }}__text__helper:pluralize('@(# rows,# row,# rows,# rows)')"></span></div>
 			<nav>
 				<button class="exec" data-exec="common/browse"><i class="far fa-database"></i>@(Records)</button>
@@ -177,9 +178,10 @@
 						obj.ondone = make;
 
 						for (var attr of item.attrs) {
-							obj.attrs[attr.id] = attr;
+							var key = item.id + attr.id;
+							obj.attrs[key] = attr;
 							if (attr.typeid)
-								obj.inputs.push({ id: attr.id, name: attr.name });
+								obj.inputs.push({ id: key, name: attr.name });
 						}
 
 						map[obj.id] = obj;
@@ -195,9 +197,10 @@
 
 							var attr = item.attrs[input.id];
 							var target = map[attr.typeid];
+							var key = input.id;
 
-							target.outputs.push({ id: attr.id, name: item.meta.singular });
-							target.connections[attr.id] = [{ id: item.id, index: input.id }];
+							target.outputs.push({ id: key, name: item.meta.singular });
+							target.connections[key] = [{ id: item.id, index: key }];
 						}
 					}
 
@@ -285,7 +288,11 @@
 				opt.items.push({ id: 'data', name: '@(Show data)', icon: 'fa fa-search', classname: 'b' });
 				opt.items.push({ id: 'form', name: '@(Insert a record)', icon: 'far fa-plus-circle green' });
 				opt.items.push({ id: 'edit', name: '@(Edit type)', icon: 'far fa-pencil' });
-				opt.items.push({ id: 'copy', name: '@(Copy as JSON)', icon: 'far fa-copy' });
+				opt.items.push('-');
+				opt.items.push('@(Copy to clipboard)');
+				opt.items.push({ id: 'copy', name: '@(JSON)', icon: 'far fa-copy' });
+				opt.items.push({ id: 'copyschema', name: '@(Schema)', icon: 'far fa-copy' });
+				opt.items.push({ id: 'copyinline', name: '@(Inline schema)', icon: 'far fa-copy' });
 				opt.items.push('-');
 				opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'far fa-trash-alt red' });
 				opt.callback = function(selected) {
@@ -312,6 +319,42 @@
 								SETTER('notify/success', '@(Copied)');
 							}));
 							break;
+						case 'copyinline':
+						case 'copyschema':
+							TAPI('types_read/' + ATTRD(el), ERROR(function(response) {
+
+								var builder = [];
+								for (var attr of response.attrs) {
+									var type = attr.type;
+									switch (type) {
+										case 'date2':
+											type = 'date';
+											break;
+										case 'currency':
+											type = 'number';
+											break;
+										case 'type':
+										case 'user':
+										case 'password':
+										case 'multiline':
+											type = 'string';
+											break;
+									}
+
+									type = type.substring(0, 1).toUpperCase() + type.substring(1);
+
+									if (type === 'string' && attr.max)
+										type += '(' + attr.max + ')';
+
+									if (selected.id === 'copyinline')
+										builder.push((attr.required ? '*' : '') + attr.id + ':' + type);
+									else
+										builder.push("\tschema.define('{0}', '{1}'".format(attr.id, type) + (attr.required ? ', true' : '') + '); // ' + attr.name + ' {' + attr.type + '}');
+								}
+
+								SETTER('clipboard/copy', selected.id == ='copyinline' ? builder.join(', ') : builder.join('\n'));
+								SETTER('notify/success', '@(Copied)');
+							}));
 					}
 				};
 				SETTER('menu/show', opt);
@@ -594,6 +637,19 @@
 				}));
 			};
 
+			exports.querybuilder = function() {
+				var win = {};
+				win.id = 'querybuilder' + Date.now().toString(36);
+				win.cachekey = 'querybuilder';
+				win.offset = { x: 200, y: 100, width: 700, height: 500, minwidth: 500, minheight: 300 };
+				win.actions = { move: true, close: true, resize: true, maximize: true, minimize: false, autosave: true };
+				win.title = '<i class="far fa-file-search mr5"></i>@(QueryBuilder)';
+				win.html = '<div data-import="url:/windows/querybuilder.html;path:{0}"></div>'.format(win.id);
+				win.destroy = function() {
+					delete W[win.id];
+				};
+				PUSH('?.windows', win);
+			};
 
 			ON('knockknock', function(counter) {
 				if (counter % 5 === 0)

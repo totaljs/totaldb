@@ -43,6 +43,7 @@
 					case 'id':
 						obj.width = 110;
 						obj.monospace = 1;
+						// obj.template = '<div class=\\\"exec\\\" data-exec=\\\"?/copyid\\\" data-prevent=\\\"true\\\"><span class=\\\"far fa-copy mr5\\\"></span>{{ id }}</div>';
 						break;
 					case 'name':
 						obj.width = 200;
@@ -138,6 +139,11 @@
 
 		exports.copy = function(el) {
 			SETTER('clipboard/copy', el.parent().find('code').text());
+			SETTER('notify/success', '@(Copied)');
+		};
+
+		exports.copyid = function(el) {
+			SETTER('clipboard/copy', el.text());
 			SETTER('notify/success', '@(Copied)');
 		};
 

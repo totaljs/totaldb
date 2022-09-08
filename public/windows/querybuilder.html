@@ -1,0 +1,69 @@
+<style>
+	.querybuilder .button { width: 100%; border: 0; border-radius: var(--radius); height: 36px; cursor: pointer; outline: 0; background-color: var(--color); color: #FFF; }
+	.querybuilder .button:disabled { background-color: #F0F0F0; color: #A0A0A0; cursor: not-allowed; }
+	.querybuilder .button i { margin-right: 5px; }
+	.querybuilder footer { padding: 10px; }
+</style>
+
+<div data-scope="~PATH~ querybuilder__init:?/init" class="querybuilder">
+	<div data---="columns__null__parent:auto" class="invisible">
+		<section data-size="400">
+			<div data---="properties__?.filter__parent:auto;margin:60"></div>
+			<footer data---="validate__?.filter">
+				<button class="exec button b" name="submit" disabled data-exec="?/run"><i class="far fa-running"></i>@(Execute)</button>
+			</footer>
+		</section>
+		<section>
+			<div data---="viewbox__null__parent:auto" class="invisible">
+				<div class="padding">
+					<div data---="objecttree__?.response"></div>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+
+<script>
+	PLUGIN('~PATH~ querybuilder', function(exports) {
+
+		var ID;
+
+		exports.init = function(scope, el) {
+			var arr = [];
+			arr.push({ name: 'typeid', label: '@(Type)', type: 'list', items: 'common.types', dirsearch: '@(Search type)', required: true });
+			arr.push({ name: 'where', label: '@(Where)', type: 'string', placeholder: 'attr1=Total&attr2=js', value: '' });
+			arr.push({ name: 'filter', label: '@(Filter)', type: 'string', placeholder: '[attr1=Total] AND [attr2=js]', value: '' });
+			arr.push({ name: 'sort', label: '@(Sort)', type: 'string', placeholder: 'attr1 asc', value: '' });
+			arr.push({ name: 'fields', label: '@(Fields)', type: 'string', placeholder: 'id,attr1', value: '' });
+			arr.push({ name: 'group', label: '@(Group)', type: 'string', placeholder: 'id', value: '' });
+			arr.push({ name: 'page', label: '@(Page)', type: 'number', placeholder: '1', value: 1 });
+			arr.push({ name: 'limit', label: '@(Limit)', type: 'number', placeholder: '100', value: 50 });
+			arr.push({ name: 'expand', label: '@(Expand)', type: 'bool', value: false });
+			SET('?.filter', arr);
+		};
+
+		exports.run = function() {
+
+			var model = exports.model;
+			var filter = {};
+
+			for (var item of model.filter)
+				filter[item.name] = item.value;
+
+			if (filter.expand)
+				filter.expand = 1;
+			else
+				delete filter.expand;
+
+			var typeid = filter.typeid;
+			delete filter.typeid;
+
+			if (typeid) {
+				var url = QUERIFY('GET /find/{0}/'.format(typeid), filter);
+				FUNC.log(url);
+				AJAX(url, '?.response');
+			}
+		};
+
+	});
+</script>
