@@ -37,6 +37,7 @@ tr td { white-space: nowrap; text-overflow: ellipsis; white-space: nowrap; overf
 .ui-flow .component-io { border-radius: 100px; }
 .ui-flow .component-selected { border-color: var(--color) !important; }
 .ui-flow path.highlight { stroke-width: 2 !important; }
+.ui-flow .connection { stroke: #E8E8E8; }
 
 .flowtype .category { margin-bottom: 5px; }
 .flowtype .name { font-size: 14px; margin-bottom: 3px; }
