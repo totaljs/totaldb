@@ -20,7 +20,7 @@ function makepgtype(type) {
 FUNC.pg_check = async function(type, callback) {
 
 	var db = DB();
-	var columns = await db.query('SELECT "column_name" as id, UPPER("data_type") as type FROM information_schema.columns WHERE table_schema = \'public\' AND table_name=\'tbl_{0}\''.format(type.id)).promise();
+	var columns = await db.query('SELECT "column_name" as id, UPPER("data_type") as type FROM information_schema.columns WHERE table_schema = \'public\' AND table_name=\'{0}\''.format(type.id)).promise();
 	var sql = [];
 	var comments = [];
 
@@ -43,13 +43,13 @@ FUNC.pg_check = async function(type, callback) {
 				var pgtype = makepgtype(t.type);
 
 				if (col.type !== pgtype)
-					sql.push('ALTER TABLE tbl_{0} ALTER COLUMN {1} TYPE {2} USING ({1}::{2})'.format(type.id, t.id, pgtype));
+					sql.push('ALTER TABLE {0} ALTER COLUMN {1} TYPE {2} USING ({1}::{2})'.format(type.id, t.id, pgtype));
 
-				comments.push('COMMENT ON COLUMN "public"."tbl_{0}"."{1}" IS {2}'.format(type.id, t.id, PG_ESCAPE(t.name)));
+				comments.push('COMMENT ON COLUMN "public"."{0}"."{1}" IS {2}'.format(type.id, t.id, PG_ESCAPE(t.name)));
 
 			} else {
 				// create
-				sql.push('ALTER TABLE tbl_{0} DROP COLUMN {1}'.format(type.id, col.id));
+				sql.push('ALTER TABLE {0} DROP COLUMN {1}'.format(type.id, col.id));
 			}
 
 			processed[col.id] = 1;
@@ -58,8 +58,8 @@ FUNC.pg_check = async function(type, callback) {
 		// Add missing fields
 		for (var t of type.attrs) {
 			if (!processed[t.id]) {
-				sql.push('ALTER TABLE tbl_{0} ADD COLUMN {1} {2}'.format(type.id, t.id, makepgtype(t.type)));
-				comments.push('COMMENT ON COLUMN "public"."tbl_{0}"."{1}" IS {2}'.format(type.id, t.id, PG_ESCAPE(t.name)));
+				sql.push('ALTER TABLE {0} ADD COLUMN {1} {2}'.format(type.id, t.id, makepgtype(t.type)));
+				comments.push('COMMENT ON COLUMN "public"."{0}"."{1}" IS {2}'.format(type.id, t.id, PG_ESCAPE(t.name)));
 			}
 		}
 
@@ -72,7 +72,7 @@ FUNC.pg_check = async function(type, callback) {
 		for (var attr of type.attrs)
 			builder.push(attr.id + ' ' + makepgtype(attr.type));
 
-		sql.push('CREATE TABLE tbl_{0} ('.format(type.id) + builder.join(', ') + ', PRIMARY KEY (id))');
+		sql.push('CREATE TABLE {0} ('.format(type.id) + builder.join(', ') + ', PRIMARY KEY (id))');
 	}
 
 	var done = function() {

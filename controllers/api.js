@@ -39,6 +39,7 @@ exports.install = function() {
 	ROUTE('+API    /       -tokens_remove/{id}            *Tokens   --> remove');
 
 	// Public REST API
+	ROUTE('+GET            /sql/                          *SQL    --> exec');
 	ROUTE('+GET            /list/{typeid}/                *Data   --> query');
 	ROUTE('+GET            /find/{typeid}/                *Data   --> find');
 	ROUTE('+GET            /first/{typeid}/               *Data   --> first');
@@ -51,6 +52,7 @@ exports.install = function() {
 	ROUTE('+GET            /attrs/{typeid}/               *Data   --> attrs');
 
 	// Public Total.js API
+	ROUTE('+API   /api/    +sql                           *SQL    --> exec');
 	ROUTE('+API   /api/    -list/{typeid}                 *Data   --> query');
 	ROUTE('+API   /api/    -find/{typeid}                 *Data   --> find');
 	ROUTE('+API   /api/    -first/{typeid}                *Data   --> first');

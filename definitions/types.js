@@ -43,10 +43,10 @@ FUNC.types_load = function(callback) {
 			FUNC.pg_check(type, function(err) {
 				if (err) {
 					// some DB error, skip
-					console.error('DB ERORR: {id} ({name})'.arg(type), err);
+					console.error('DB ERROR: {id} ({name})'.arg(type), err);
 					next();
 				} else {
-					type.table = 'tbl_' + type.id;
+					type.table = type.id;
 					FUNC.types_configure(type);
 					meta[type.id] = type;
 					next();
@@ -566,38 +566,6 @@ FUNC.types_permit = function(operation, type, user) {
 	}
 
 	return true;
-};
-
-// DEPRECATED
-FUNC.types_postprocess = async function(item) {
-	var type = MAIN.types[item.typeid];
-
-	if (type) {
-		for (var key in type.fields) {
-
-			var attr = type.fields[key];
-			var alias = attr.alias || key;
-
-			// Relation
-			if (attr.type === 'type' && attr.typeid) {
-				var relation_id = item.data[key];
-				if (!relation_id)
-					continue;
-
-				var relation = await DB().one('tbl_data').id(relation_id).where('typeid', attr.typeid).where('isremoved', false).promise();
-				item.data[alias] = relation ? relation : null;
-				continue;
-			}
-
-			// Alias for primitive values
-			// Aliases are removed
-			/*
-			if (alias !== key) {
-				item.data[alias] = item.data[key];
-				delete item.data[key];
-			}*/
-		}
-	}
 };
 
 function toName(val) {

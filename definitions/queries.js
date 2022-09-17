@@ -445,7 +445,6 @@ function makefields(cache, type, query) {
 
 			scalar = key.substring(0, index).toUpperCase();
 			key = key.substring(index + 1, key.length - 1);
-			console.log('===>', scalar, key);
 		}
 
 		index = key.indexOf('_');
@@ -494,7 +493,6 @@ function makefields(cache, type, query) {
 		} else {
 
 			attr = type.fields[key];
-			console.log('--->', scalar, groups, key);
 
 			if (!scalar && groups && !groups[key]) {
 				cache.errors.push('query.fields: "{0}" is not included in the query.group'.format(key));
@@ -508,12 +506,14 @@ function makefields(cache, type, query) {
 				} else {
 
 					if (attr.ref) {
-						fields.push(key + '_name', key + '_id');
+						if (!group)
+							fields.push(key + '_name', key + '_id');
 						continue;
 					}
 
 					cache.fields.push('t1.' + key);
 				}
+
 			} else
 				cache.errors.push('query.fields: "{0}" is not defined in the type "{1}"'.format(key, type.id));
 		}
@@ -667,7 +667,7 @@ FUNC.makequery = async function(query, callback) {
 
 	for (var key in parsed.join) {
 		var join = parsed.join[key];
-		joins.push('LEFT JOIN tbl_' + key + ' ' + join.alias + ' ON ' + join.alias + '.id=t1.' + join.compare);
+		joins.push('LEFT JOIN ' + key + ' ' + join.alias + ' ON ' + join.alias + '.id=t1.' + join.compare);
 	}
 
 	if (query.command === 'detail') {

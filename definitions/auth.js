@@ -23,6 +23,7 @@ AUTH(function($) {
 				user.id = $.headers['x-user'];
 				user.token = token.name;
 				user.types = token.types;
+				user.options = token.options;
 				user.permissions = ($.headers['x-permissions'] || '').split(',');
 				// user.permissions.unshift(user.id);
 
