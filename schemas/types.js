@@ -63,7 +63,7 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.setQuery(function($) {
 
-		if (!$.user.sa) {
+		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
 			$.invalid(401);
 			return;
 		}
@@ -78,7 +78,7 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.addWorkflow('count', function($) {
 
-		if (!$.user.sa) {
+		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
 			$.invalid(401);
 			return;
 		}
@@ -100,7 +100,7 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.setRead(function($) {
 
-		if (!$.user.sa) {
+		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
 			$.invalid(401);
 			return;
 		}
@@ -116,7 +116,7 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.setSave(async function($, model) {
 
-		if (!$.user.sa) {
+		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
 			$.invalid(401);
 			return;
 		}
@@ -141,6 +141,12 @@ NEWSCHEMA('Types', function(schema) {
 		if (id) {
 			var item = await db.check('tbl_type').id(customid).promise($);
 			if (item) {
+
+				if ($.user.options && $.user.options.types) {
+					delete model.x;
+					delete model.y;
+				}
+
 				model.dtupdated = NOW;
 				db.modify('tbl_type', model).id(id).error(404).done($, function() {
 					FUNC.types_load($.successful(function() {
@@ -169,7 +175,7 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.setRemove(function($) {
 
-		if (!$.user.sa) {
+		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
 			$.invalid(401);
 			return;
 		}

@@ -11,7 +11,8 @@
 				</div>
 			</div>
 			<hr style="margin-top:10px" />
-			<div data---="input__?.options.iswebsocket__type:checkbox">@(Allow WebSocket synchronization service for workers)</div>
+			<div data---="input__?.options.websocket__type:checkbox">@(Allow WebSocket synchronization service for workers)</div>
+			<div data---="input__?.options.types__type:checkbox">@(Allow to create/update types)</div>
 			<div data---="input__?.options.sql__type:checkbox">@(Allow to execute SQL commands)</div>
 		</div>
 		<hr />
@@ -28,7 +29,7 @@
 
 <script>
 
-	PLUGIN('~PATH~', function(exports) {
+	PLUGIN(function(exports) {
 
 		exports.reload = function(com) {
 			var model = exports.model;

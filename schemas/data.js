@@ -273,7 +273,7 @@ NEWSCHEMA('Data', function(schema) {
 		}
 
 		var builder = DB().find('tbl_type').fields('id,name,singular,color,icon,category,attrs,options');
-		var types = Object.keys($.user.types);
+		var types = $.user.types ? Object.keys($.user.types) : EMPTYARRAY;
 
 		if (types.length)
 			builder.in('id', types);
@@ -303,7 +303,7 @@ NEWSCHEMA('Data', function(schema) {
 			return;
 		}
 
-		if (!$.user.sa && $.user.types[$.id]) {
+		if (!$.user.sa && $.user.types && $.user.types[$.id]) {
 			$.callback(EMPTYARRAY);
 			return;
 		}

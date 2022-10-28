@@ -13,7 +13,7 @@ AUTH(function($) {
 			token = MAIN.tokens[token];
 			if (token) {
 
-				if ($.websocket && !token.options.iswebsocket) {
+				if ($.websocket && !token.options.websocket) {
 					BLACKLIST[$.ip] = (BLACKLIST[$.ip] || 0) + 1;
 					$.invalid();
 					return;

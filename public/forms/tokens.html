@@ -17,7 +17,7 @@
 									<span class="gray mr10 fs12">{{ m.dtcreated | format('[date]') }}</span>
 									<span class="exec red" data-exec="?/remove" data-prevent="true"><i class="far fa-trash-alt"></i></span>
 								</div>
-								<span class="exec mr10 blue" data-exec="?/copy" title="@(Copy token to the clipboard)" data-prevent="true"><i class="far fa-copy"></i></span>{{ m.name }}
+								<span class="exec mr10 blue" data-exec="?/copy" title="@(Copy token to the clipboard)" data-prevent="true"><i class="far fa-copy"></i></span>{{ m.name }}{{ if m.options.sql }}<span class="badge badge-medium badge-gray ml5">@(SQL)</span>{{ fi }}{{ if m.options.types }}<span class="badge badge-medium badge-gray ml5">@(Types)</span>{{ fi }}{{ if m.options.websocket }}<span class="badge badge-medium badge-gray ml5">@(WebSocket)</span>{{ fi }}{{ if m.types && m.types.length }}<span class="badge badge-medium badge-red ml5">@(Restricted)</span>{{ fi }}
 							</section>
 						</figure>
 						{{ end }}
@@ -33,7 +33,7 @@
 
 <script>
 
-	PLUGIN('~PATH~', function(exports) {
+	PLUGIN(function(exports) {
 
 		exports.reload = function(com) {
 			exports.refresh();
@@ -54,9 +54,9 @@
 
 		exports.remove = function(el) {
 			var id = ATTRD(el);
-			SETTER('approve/show', '@(Are you sure you want to remove selected token?)', '"far fa-trash-alt" @(Remove)', function() {
+			SETTER('approve/show', '@(Are you sure you want to remove selected token?)', '"far fa-trash-alt" @(Remove)', ERROR(function() {
 				TAPI('tokens_remove/' + id, exports.refresh);
-			});
+			}));
 		};
 
 		exports.copy = function(el) {

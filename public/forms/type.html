@@ -99,7 +99,7 @@
 			return '<i class="{0}"></i>'.format(item.icon);
 	};
 
-	PLUGIN('~PATH~', function(exports) {
+	PLUGIN(function(exports) {
 
 		exports.reload = function(com) {
 			var model = exports.model;
@@ -145,7 +145,7 @@
 				model.columns = 0;
 
 			model.columns++;
-			data.id = 'attr' + model.columns;
+			data.id = 'x' + model.columns.padLeft(2, '0');
 
 			data.callback = function(attr) {
 				data.id = data.id.slug().replace(/\s|-|_/g, '');

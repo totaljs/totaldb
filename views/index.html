@@ -29,6 +29,7 @@
 
 	<div data---="windows__common.windows"></div>
 	<div data---="edit"></div>
+	<div data---="errorhandler"></div>
 
 	<div data---="importer__common.form2__if:formtoken;url:/forms/token.html"></div>
 	<div data---="importer__common.form2__if:formattr;url:/forms/attr.html"></div>
@@ -659,18 +660,6 @@
 			// setTimeout(() => exports.tokens(), 500);
 			exports.reload();
 
-		});
-
-		ON('ERROR', function(err) {
-
-			var builder = [];
-			if (err instanceof Array) {
-				for (var item of err)
-					builder.push(item.error);
-			} else
-				builder.push(err + '');
-
-			SETTER('message/warning', builder.join('<br>'));
 		});
 
 		Thelpers.time = function(value) {
