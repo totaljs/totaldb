@@ -290,6 +290,27 @@ NEWSCHEMA('Data', function(schema) {
 				attr.locked = undefined;
 				attr.sortindex = undefined;
 				attr.verify = undefined;
+
+				if (!attr.min)
+					attr.min = undefined;
+
+				if (!attr.max)
+					attr.max = undefined;
+
+				if (!attr.icon)
+					attr.icon = undefined;
+
+				if (!attr.color)
+					attr.color = undefined;
+
+				if (!attr.error)
+					attr.error = undefined;
+
+				if (!attr.typeid)
+					attr.typeid = undefined;
+
+				if (!attr.validate)
+					attr.validate = undefined;
 			}
 		}
 
