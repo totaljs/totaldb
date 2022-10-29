@@ -6,6 +6,7 @@ NEWSCHEMA('Attr', function(schema) {
 	schema.define('color', 'String');
 	schema.define('type', [], true);
 	schema.define('typeid', 'String');
+	schema.define('reference', 'String'); // A custom reference
 	schema.define('currency', 'String');
 	schema.define('sortindex', Number);
 	schema.define('permissions', '[String]');

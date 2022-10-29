@@ -36,6 +36,11 @@
 			<div class="grid-4">
 				<div class="m">
 					<div data---="input__?.id__monospace:1;required:1;align:1;disabled:1" class="b">@(ID)</div>
+					<div class="help">@(Attribute identificator)</div>
+				</div>
+				<div class="m">
+					<div data---="input__?.reference__monospace:1;align:1;">@(Reference)</div>
+					<div class="help">@(A custom reference)</div>
 				</div>
 				<div class="m">
 					<div data---="input__?.color__type:color">@(Color)</div>
@@ -46,8 +51,6 @@
 				<div class="m">
 					<div data---="input__?.currency__required:1;monospace:1;align:1;type:upper__'EUR'" data-bind="?.type__enabled:value==='currency'">@(Currency)</div>
 				</div>
-			</div>
-			<div class="grid-4">
 				<div class="m">
 					<div data---="input__?.min__type:number;monospace:1__0">@(Min. value)</div>
 				</div>
