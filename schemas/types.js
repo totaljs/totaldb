@@ -466,7 +466,7 @@ NEWSCHEMA('Types', function(schema) {
 
 		// DELETE
 		for (var item of types)
-			sql.push('DROP TABLE tbl_' + item.id);
+			sql.push('DROP TABLE ' + item.id);
 
 		sql.push('DELETE FROM tbl_type');
 		sql.wait(function(item, next) {

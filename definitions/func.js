@@ -6,6 +6,12 @@ function makepgtype(type) {
 			return 'TIMESTAMP';
 		case 'date2':
 			return 'DATE';
+		case 'int2':
+		case 'smallint':
+			return 'SMALLINT';
+		case 'int4':
+		case 'integer':
+			return 'INTEGER';
 		case 'number':
 		case 'currency':
 			return 'NUMERIC';
