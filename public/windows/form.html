@@ -12,10 +12,10 @@
 	.dataform .multiline { position: relative; display: inline-block; white-space: break-spaces; }
 </style>
 
-<div data-scope="~PATH~ dataform__init:?/init" class="dataform">
+<div data-plugin="~PATH~ dataform__init:?/init" class="dataform">
 	<div class="toolbar toolbar-bg">
-		<button class="exec" data-exec="?/submit" data-bind="?.modified__enabled" disabled><i class="far fa-save"></i>@(Save)</button>
-		<button class="exec" data-exec="?/copyjson"><i class="fa fa-code"></i>@(Copy JSON)</button>
+		<button class="exec" data-exec="?/submit" data-bind="?.modified__enabled" disabled><i class="ti ti-save"></i>@(Save)</button>
+		<button class="exec" data-exec="?/copyjson"><i class="ti ti-code"></i>@(Copy JSON)</button>
 	</div>
 	<div data---="viewbox__null__parent:auto;margin:60">
 		<div class="padding">
@@ -23,14 +23,14 @@
 				<script type="text/html">
 					<div class="keyvalue">
 						<span>@(ID)</span>
-						<div><span class="exec" data-exec="?/copy"><i class="far fa-copy"></i></span><span class="badge badge-gray"><code>{{ value.id }}</code></span></div>
+						<div><span class="exec" data-exec="?/copy"><i class="ti ti-copy"></i></span><span class="badge badge-gray"><code>{{ value.id }}</code></span></div>
 					</div>
 					<div class="keyvalue">
-						<span><i class="far fa-calendar"></i>@(Created)</span>
+						<span><i class="ti ti-calendar"></i>@(Created)</span>
 						<div>{{ value.dtcreated | format('[ts]') | empty }} <span class="fs11 gray">{{ value.dtcreated | time2 }}</span></div>
 					</div>
 					<div class="keyvalue">
-						<span><i class="far fa-calendar"></i>@(Updated)</span>
+						<span><i class="ti ti-calendar"></i>@(Updated)</span>
 						<div>{{ value.dtupdated | format('[ts]') | empty }}{{ if value.dtupdated }} <span class="fs11 gray">{{ value.dtupdated | time2 }}</span>{{ fi }}</div>
 					</div>
 				</script>
@@ -50,14 +50,14 @@
 									{{ else if m.type === 'currency' }}
 									<span data-id="{{ m.id }}" class="value edit" data-edit="exec:?/save;type:number;selectall:1;{{ if m.required }}required:1{{ fi }}">{{ m.value | format | empty }}</span> <span class="gray">{{ m.currency }}</span>
 									{{ else if m.type === 'type' }}
-									<span class="exec pull-right" data-exec="?/detail" data-id="{{ m.id }}"><i class="fas fa-search"></i></span>
+									<span class="exec pull-right" data-exec="?/detail" data-id="{{ m.id }}"><i class="ti ti-search"></i></span>
 									<span data-id="{{ m.id }}" class="value exec" data-exec="?/type">{{ m.text | empty }}</span>
 									{{ else if m.type === 'icon' }}
 									<span data-id="{{ m.id }}" class="value exec" data-exec="?/icon">{{ if m.value }}<i class="{{ m.value }}"></i>{{ else }}---{{ fi }}</span>
 									{{ else if m.type === 'color' }}
-									<span data-id="{{ m.id }}" class="value exec" data-exec="?/color">{{ if m.value }}<i class="fas fa-circle" style="color:{{ m.value }}"></i>{{ else }}---{{ fi }}</span>
+									<span data-id="{{ m.id }}" class="value exec" data-exec="?/color">{{ if m.value }}<i class="ti ti-circle" style="color:{{ m.value }}"></i>{{ else }}---{{ fi }}</span>
 									{{ else if m.type === 'boolean' }}
-									<span data-id="{{ m.id }}" class="value exec checkbox{{ if m.value }} checked{{ fi }}" data-exec="?/checkbox"><i class="fas fa-check"></i></span>
+									<span data-id="{{ m.id }}" class="value exec checkbox{{ if m.value }} checked{{ fi }}" data-exec="?/checkbox"><i class="ti ti-check"></i></span>
 									{{ else if m.type === 'object' }}
 									<span data-id="{{ m.id }}" class="value"><code>{{ m.value | jsonformat }}</code></span>
 									{{ else if m.type === 'multiline' }}
@@ -118,7 +118,7 @@
 			if (ID[1]) {
 				var url = 'GET /read/{0}/{1}'.format(ID[0], ID[1]);
 				FUNC.log(url);
-				AJAX(url, ERROR(function(response) {
+				exports.ajax(url, ERROR(function(response) {
 					for (var item of attrs) {
 						var val = response[item.id];
 						item.prev = val;
@@ -128,13 +128,13 @@
 						} else
 							item.value = val;
 					}
-					SET('?.meta', response);
-					SET('?.attrs', attrs);
+					exports.set('meta', response);
+					exports.set('attrs', attrs);
 				}, function() {
 					SETTER('windows/close', 'detail' + ID.join(''));
 				}));
 			} else
-				SET('?.attrs', attrs);
+				exports.set('attrs', attrs);
 		};
 
 		exports.detail = function(el) {
@@ -156,7 +156,7 @@
 			opt.items = function(q, next) {
 				var url = QUERIFY('GET /find/{typeid}/'.arg(attr), { fields: 'id,name', name: q });
 				FUNC.log(url);
-				AJAX(url, function(response) {
+				exports.ajax(url+ ' ERROR', function(response) {
 					response.unshift({ id: null, template: '<b>@(Create)</b>' });
 					next(response);
 				});
@@ -220,11 +220,11 @@
 
 			var url = 'POST /save/{0}/'.format(ID[0]);
 			FUNC.log(url, data);
-			AJAX(url, data, ERROR(function() {
+			exports.ajax(url + ' ERROR', data, function() {
 				var key = 'data' + ID[0];
 				SETTER('windows/close', 'detail' + ID.join(''));
 				W[key] && NUL(key + '.response');
-			}));
+			});
 		};
 
 		exports.save = function(response, next) {
@@ -249,7 +249,7 @@
 				el.closest('td').tclass('modified', attr.value !== attr.prev);
 				exports.validate();
 			};
-			SETTER('faicons/show', opt);
+			SETTER('icons/show', opt);
 		};
 
 		exports.color = function(el) {
@@ -260,7 +260,7 @@
 			opt.element = el;
 			opt.callback = function(val) {
 				attr.value = val;
-				el.html(val ? '<i class="fas fa-circle" style="color:{0}"></i>'.format(val) : DEF.empty);
+				el.html(val ? '<i class="ti ti-circle" style="color:{0}"></i>'.format(val) : DEF.empty);
 				el.closest('td').tclass('modified', attr.value !== attr.prev);
 				exports.validate();
 			};

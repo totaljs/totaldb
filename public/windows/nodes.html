@@ -25,11 +25,11 @@
 						{{ if m.key !== 'groups' && m.key !== 'paused' && m.key !== 'tabs' }}
 							<div class="item exec" data-exec="common/find" data-search="{{ m.key }}" data-id="{{ m.key }}">
 								<div class="controls">
-									<span class="exec" data-exec="common/update" data-prevent="true" title="@(Settings)"><i class="fa fa-wrench"></i></span>
-									<span class="exec" data-exec="common/remove" data-prevent="true" title="@(Remove)"><i class="far fa-trash-alt red"></i></span>
+									<span class="exec" data-exec="common/update" data-prevent="true" title="@(Settings)"><i class="ti ti-wrench"></i></span>
+									<span class="exec" data-exec="common/remove" data-prevent="true" title="@(Remove)"><i class="ti ti-trash red"></i></span>
 								</div>
 								<span class="monospace">{{ m.key }}</span>
-								<div class="name"><i class="{{ m.value.meta.icon | empty('fa fa-database') }}"></i><b>{{ m.value.meta.name }}</b></div>
+								<div class="name"><i class="{{ m.value.meta.icon | empty('ti ti-database') }}"></i><b>{{ m.value.meta.name }}</b></div>
 							</div>
 						{{ fi }}
 					{{ end }}

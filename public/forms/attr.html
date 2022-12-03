@@ -6,8 +6,8 @@
 	.~PATH~ .ui-radiobuttonexpert-container { padding: 10px; }
 </style>
 
-<div data---="box__common.form2__if:~PATH~;icon:fa fa-sim-card;autofocus:true;reload:?/reload;submit:?/submit;width:700" class="hidden" data-scope="~PATH~">
-	<div class="~PATH~">
+<div data---="box__common.form2__if:~PATH~;icon:ti ti-file;autofocus:true;reload:?/reload;submit:?/submit;width:700" class="hidden ~PATH~" data-plugin="~PATH~">
+	<div>
 		<div data---="radiobuttonexpert__?.type__datasource:DEF.cl.types__'string'">
 			<script type="text/html">
 				<div class="radiobutton">
@@ -21,7 +21,7 @@
 
 			<div data-bind="?.type__show:value==='type'" class="hidden m">
 				<div data---="input__?.typeid__required:1;dirsource:common.types;placeholder:@(Choose type)">@(Type)</div>
-				<div class="help m"><i class="far fa-question-circle blue"></i>@(Choose a relation between this field and another type)</div>
+				<div class="help m"><i class="ti ti-question-circle blue"></i>@(Choose a relation between this field and another type)</div>
 				<div data---="input__?.typeremove__type:checkbox">@(Remove this record if someone will remove the related record.)</div>
 				<hr />
 			</div>
@@ -61,11 +61,11 @@
 			<hr />
 			<div class="grid-2">
 				<div class="m">
-					<div data---="input__?.error__placeholder:@(Value of {0} is invalid);icon:far fa-bug">@(Error message)</div>
+					<div data---="input__?.error__placeholder:@(Value of {0} is invalid);icon:ti ti-bug">@(Error message)</div>
 					<div class="help">@(The app will return the message if the value is not valid)</div>
 				</div>
 				<div class="m">
-					<div data---="input__?.default__monospace:1;placeholder:new Date();icon:far fa-code">@(Default value)</div>
+					<div data---="input__?.default__monospace:1;placeholder:new Date();icon:ti ti-code">@(Default value)</div>
 					<div class="help">@(The code will be evaluated as a raw JavaScript code)</div>
 				</div>
 			</div>
@@ -88,7 +88,7 @@
 		</div>
 	</div>
 	<nav data---="validate__?">
-		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
 		<button name="cancel">@(Cancel)</button>
 	</nav>
 </div>

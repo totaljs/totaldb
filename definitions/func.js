@@ -55,7 +55,7 @@ FUNC.pg_check = async function(type, callback) {
 
 			} else {
 				// create
-				sql.push('ALTER TABLE {0} DROP COLUMN {1}'.format(type.id, col.id));
+				sql.push('ALTER TABLE {0} DROP COLUMN "{1}"'.format(type.id, col.id));
 			}
 
 			processed[col.id] = 1;
@@ -76,7 +76,7 @@ FUNC.pg_check = async function(type, callback) {
 		builder.push('id TEXT, name TEXT, search TEXT, permissions _TEXT, isremoved BOOLEAN DEFAULT false, dtcreated TIMESTAMP DEFAULT NOW(), dtupdated TIMESTAMP, dtremoved TIMESTAMP');
 
 		for (var attr of type.attrs)
-			builder.push(attr.id + ' ' + makepgtype(attr.type));
+			builder.push('"' + attr.id + '" ' + makepgtype(attr.type));
 
 		sql.push('CREATE TABLE {0} ('.format(type.id) + builder.join(', ') + ', PRIMARY KEY (id))');
 	}

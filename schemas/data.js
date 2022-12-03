@@ -30,7 +30,7 @@ NEWSCHEMA('Data', function(schema) {
 		$.query.typeid = $.params.typeid;
 		$.query.user = $.user;
 
-		FUNC.makequery($.query, $.callback);
+		FUNC.makequery($.query, $.callback, $);
 	});
 
 	schema.addWorkflow('first', function($) {
@@ -44,7 +44,7 @@ NEWSCHEMA('Data', function(schema) {
 		$.query.typeid = $.params.typeid;
 		$.query.user = $.user;
 
-		FUNC.makequery($.query, $.callback);
+		FUNC.makequery($.query, $.callback, $);
 	});
 
 	schema.addWorkflow('exists', function($) {
@@ -229,6 +229,7 @@ NEWSCHEMA('Data', function(schema) {
 			var response = await db.modify(type.table, { isremoved: true, dtremoved: NOW }).id(id).where('isremoved', false).promise($);
 
 			if (!response) {
+				$.controller.status = 404;
 				$.callback(null);
 				return;
 			}

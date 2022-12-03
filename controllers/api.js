@@ -62,6 +62,7 @@ exports.install = function() {
 	ROUTE('+API   /api/    -remove/{typeid}/{id}          *Data   --> remove');
 	ROUTE('+API   /api/    -count/{typeid}                *Data   --> count');
 	ROUTE('+API   /api/    -types                         *Data   --> types');
+	ROUTE('+API   /api/    +types_save                    *Types  --> save');
 	ROUTE('+API   /api/    -attrs/{typeid}                *Data   --> attrs');
 
 };

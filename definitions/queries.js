@@ -106,8 +106,11 @@ function makesqlwhere(sql, type, key, value) {
 	if (type === undefined || type === 'string') {
 		if (value[0] === '%' || value[value.length - 1] === '%')
 			sql.push(key + ' ILIKE ' + PG_ESCAPE(value));
+		else if (value[0] === '!')
+			sql.push(key + '<>' + PG_ESCAPE(value.substring(1)));
 		else
 			sql.push(key + '=' + PG_ESCAPE(value));
+
 		return;
 	}
 
@@ -117,6 +120,10 @@ function makesqlwhere(sql, type, key, value) {
 		case '>':
 		case '<':
 			comparer = value[0];
+			value = value.substring(1);
+			break;
+		case '!':
+			comparer = '<>';
 			value = value.substring(1);
 			break;
 	}
@@ -638,7 +645,7 @@ function notallowed(user, typeid) {
 		return true;
 }
 
-FUNC.makequery = async function(query, callback) {
+FUNC.makequery = async function(query, callback, $) {
 
 	// query.fields  = 'id,COUNT(dtcreated)';
 	// query.filter  = '[name=Skúšobný] AND [attr14_name~%Total%] OR ([attr12=123456] OR [attr7_name=Reject])';
@@ -749,6 +756,9 @@ FUNC.makequery = async function(query, callback) {
 			}
 		}
 	}
+
+	if ($ && response == null)
+		$.controller.status = 404;
 
 	callback(null, response);
 };

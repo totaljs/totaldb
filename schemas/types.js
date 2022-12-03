@@ -134,6 +134,9 @@ NEWSCHEMA('Types', function(schema) {
 			model.id = null;
 		}
 
+		if (!model.options)
+			model.options = {};
+
 		model.attrs = JSON.stringify(model.attrs);
 		model.options = JSON.stringify(model.options);
 
@@ -284,7 +287,7 @@ NEWSCHEMA('Types', function(schema) {
 
 			var id = type.id.substring(1);
 			var db = DB();
-			var table = 'tbl_' + id;
+			var table = id;
 			var limit = 1000;
 
 			var download = async function(page) {

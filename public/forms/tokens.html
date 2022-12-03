@@ -1,6 +1,6 @@
-<div data---="box__common.form__if:~PATH~;title:@(Access tokens);icon:far fa-plug;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
+<div data---="box__common.form__if:~PATH~;title:@(Access tokens);icon:ti ti-plug;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-plugin="~PATH~">
 	<nav>
-		<button class="exec" data-exec="?/create"><i class="fa fa-plus-circle green"></i>@(Create)</button>
+		<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle green"></i>@(Create)</button>
 	</nav>
 	<div>
 		<div data---="empty__?.items__parent:auto;marign:20">
@@ -15,9 +15,9 @@
 							<section>
 								<div class="pull-right">
 									<span class="gray mr10 fs12">{{ m.dtcreated | format('[date]') }}</span>
-									<span class="exec red" data-exec="?/remove" data-prevent="true"><i class="far fa-trash-alt"></i></span>
+									<span class="exec red" data-exec="?/remove" data-prevent="true"><i class="ti ti-trash"></i></span>
 								</div>
-								<span class="exec mr10 blue" data-exec="?/copy" title="@(Copy token to the clipboard)" data-prevent="true"><i class="far fa-copy"></i></span>{{ m.name }}{{ if m.options.sql }}<span class="badge badge-medium badge-gray ml5">@(SQL)</span>{{ fi }}{{ if m.options.types }}<span class="badge badge-medium badge-gray ml5">@(Types)</span>{{ fi }}{{ if m.options.websocket }}<span class="badge badge-medium badge-gray ml5">@(WebSocket)</span>{{ fi }}{{ if m.types && m.types.length }}<span class="badge badge-medium badge-red ml5">@(Restricted)</span>{{ fi }}
+								<span class="exec mr10 blue" data-exec="?/copy" title="@(Copy token to the clipboard)" data-prevent="true"><i class="ti ti-copy"></i></span>{{ m.name }}{{ if m.options.sql }}<span class="badge badge-medium badge-gray ml5">@(SQL)</span>{{ fi }}{{ if m.options.types }}<span class="badge badge-medium badge-gray ml5">@(Types)</span>{{ fi }}{{ if m.options.websocket }}<span class="badge badge-medium badge-gray ml5">@(WebSocket)</span>{{ fi }}{{ if m.types && m.types.length }}<span class="badge badge-medium badge-red ml5">@(Restricted)</span>{{ fi }}
 							</section>
 						</figure>
 						{{ end }}
@@ -40,12 +40,12 @@
 		};
 
 		exports.refresh = function() {
-			TAPI('tokens @showloading', ERROR(true, '?.items @hideloading'));
+			exports.tapi('tokens @showloading ERROR', '?.items @hideloading');
 		};
 
 		exports.update = function(el) {
 			var id = ATTRD(el);
-			TAPI('tokens_read/' + id, ERROR(function(response) {
+			exports.tapi('tokens_read/' + id, ERROR(function(response) {
 				var path = 'formtoken';
 				SET(path + ' @reset', response);
 				SET('common.form2', path);
@@ -54,9 +54,9 @@
 
 		exports.remove = function(el) {
 			var id = ATTRD(el);
-			SETTER('approve/show', '@(Are you sure you want to remove selected token?)', '"far fa-trash-alt" @(Remove)', ERROR(function() {
-				TAPI('tokens_remove/' + id, exports.refresh);
-			}));
+			SETTER('approve/show', '@(Are you sure you want to remove selected token?)', '"ti ti-trash" @(Remove)', function() {
+				exports.tapi('tokens_remove/' + id, exports.refresh);
+			});
 		};
 
 		exports.copy = function(el) {

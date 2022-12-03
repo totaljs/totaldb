@@ -5,12 +5,12 @@
 	.querybuilder footer { padding: 10px; }
 </style>
 
-<div data-scope="~PATH~ querybuilder__init:?/init" class="querybuilder">
+<div data-plugin="~PATH~ querybuilder__init:?/init" class="querybuilder">
 	<div data---="columns__null__parent:auto" class="invisible">
 		<section data-size="400">
 			<div data---="properties__?.filter__parent:auto;margin:60"></div>
 			<footer data---="validate__?.filter">
-				<button class="exec button b" name="submit" disabled data-exec="?/run"><i class="far fa-running"></i>@(Execute)</button>
+				<button class="exec button b" name="submit" disabled data-exec="?/run"><i class="ti ti-caret-square-right"></i>@(Execute)</button>
 			</footer>
 		</section>
 		<section>
@@ -39,7 +39,7 @@
 			arr.push({ name: 'page', label: '@(Page)', type: 'number', placeholder: '1', value: 1 });
 			arr.push({ name: 'limit', label: '@(Limit)', type: 'number', placeholder: '100', value: 50 });
 			arr.push({ name: 'expand', label: '@(Expand)', type: 'bool', value: false });
-			SET('?.filter', arr);
+			exports.set('filter', arr);
 		};
 
 		exports.run = function() {
@@ -61,7 +61,7 @@
 			if (typeid) {
 				var url = QUERIFY('GET /find/{0}/'.format(typeid), filter);
 				FUNC.log(url);
-				AJAX(url, '?.response');
+				exports.ajax(url + ' ERROR', '?.response');
 			}
 		};
 

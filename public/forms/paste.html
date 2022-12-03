@@ -1,9 +1,9 @@
-<div data---="miniform__common.form__if:~PATH~;title:@(Paste JSON data);icon:fas fa-paste;autofocus:true;submit:?/submit;width:500" class="hidden" data-scope="~PATH~">
+<div data---="miniform__common.form__if:~PATH~;title:@(Paste JSON data);icon:ti ti-paste;autofocus:true;submit:?/submit;width:500" class="hidden" data-plugin="~PATH~">
 	<div class="padding">
 		<div data---="input__?.data__type:multiline;required:1;height:250;monospace:1">@(JSON data)</div>
 	</div>
 	<nav data---="validate__?">
-		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(IMPORT)</button>
+		<button name="submit" disabled><i class="ti ti-check-circle"></i>@(IMPORT)</button>
 		<button name="cancel">@(Cancel)</button>
 	</nav>
 </div>
@@ -30,7 +30,7 @@
 				}
 
 				if (item.collection == 'type') {
-					TAPI('types_save', item, function(response) {
+					exports.tapi('types_save', item, function(response) {
 						if (response instanceof Array)
 							errors.push(response[0].error);
 						next();
@@ -51,7 +51,7 @@
 						}
 					}
 
-					AJAX('POST /save/' + item.collection + '/', data, function(response) {
+					exports.ajax('POST /save/' + item.collection + '/', data, function(response) {
 						if (response instanceof Array)
 							errors.push(response[0].error);
 						next();

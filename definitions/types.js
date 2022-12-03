@@ -531,9 +531,9 @@ FUNC.types_validate = async function($, typeid, operation, model, callback) {
 
 	if (!type.options.ispartial) {
 		for (var k in fields) {
-			if (!keys[k]) {
+			if (k !== 'dtupdated' && k !== 'dtcreated' && k !== 'id' && !keys[k]) {
 				var item = fields[k];
-				errors.push({ name: item.name, path: path, error: (item.error || 'Value of "{0}" is invalid').format(item.name) });
+				errors.push({ name: item.name, path: item.id, error: (item.error || 'Value of "{0}" is invalid').format(item.name) });
 			}
 		}
 	}

@@ -1,12 +1,12 @@
 <style>
 	.~PATH~ .listing2 .name i { width: 14px; margin-right: 5px; text-align: center; }
 </style>
-<div data---="box__common.form__if:~PATH~;icon:fas fa-code-branch;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
+<div data---="box__common.form__if:~PATH~;icon:ti ti-code-branch;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
 	<div class="padding ~PATH~">
 
 		<div data-bind="?.id__template__show" class="m">
 			<script type="text/html">
-				<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="far fa-copy"></i></span> <span class="badge badge-gray"><code>{{ value }}</code></span>
+				<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="ti ti-copy"></i></span> <span class="badge badge-gray"><code>{{ value }}</code></span>
 			</script>
 		</div>
 
@@ -26,7 +26,7 @@
 						<div data---="input__?.color__type:color;placeholder:@(Choose color)">@(Color)</div>
 					</div>
 					<div class="m">
-						<div data---="input__?.icon__type:icon;placeholder:@(Choose icon)__'fa fa-database'">@(Icon)</div>
+						<div data---="input__?.icon__type:icon;placeholder:@(Choose icon)__'ti ti-database'">@(Icon)</div>
 					</div>
 				</div>
 			</div>
@@ -46,14 +46,14 @@
 		</div>
 		<hr />
 		<div class="message message-alert m">
-			<i class="fas fa-exclamation-triangle"></i>@(Every type contains an internal <b>"name"</b> field for humans identifing of stored records. Its ID is <b>name</b>.)
+			<i class="ti ti-exclamation-triangle"></i>@(Every type contains an internal <b>"name"</b> field for humans identifing of stored records. Its ID is <b>name</b>.)
 		</div>
 
 		<div class="caption m">
 			<div class="toolbar">
-				<button class="exec" data-exec="?/add"><i class="fa fa-plus-circle green"></i>@(Add)</button>
+				<button class="exec" data-exec="?/add"><i class="ti ti-plus-circle green"></i>@(Add)</button>
 			</div>
-			<label><i class="fas fa-list"></i>@(Attributes)</label>
+			<label><i class="ti ti-list"></i>@(Attributes)</label>
 		</div>
 
 		<div data---="movable__?.attrs__selector:figure;exec:?/move">
@@ -64,7 +64,7 @@
 						<section>
 							<div class="pull-right">
 								{{ m.type | attrtype(m.typeid) }}
-								<span class="exec ml10 red" data-exec="?/remove"><i class="far fa-trash-alt"></i></span>
+								<span class="exec ml10 red" data-exec="?/remove"><i class="ti ti-trash"></i></span>
 							</div>
 							<span class="name">{{ m.type | attricon }} {{ if m.required }}<b class="red">{{ m.name }}</b>{{ else }}{{ m.name }}{{ fi }} <span class="fs11 gray exec link ml5" data-exec="?/copyattr" data-prevent="true">{{ m.id }}</span> {{ if m.note }}<span class="hellip ml5 fs12">{{ m.note }}</span>{{ fi }}</span>
 						</section>
@@ -76,7 +76,7 @@
 
 	</div>
 	<nav data---="validate__?__if:value && value.attrs.length">
-		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
 		<button name="cancel">@(Cancel)</button>
 	</nav>
 </div>
@@ -116,7 +116,7 @@
 				model.y = pos.scrollTop() + 100;
 			}
 
-			TAPI('types_save', model, ERROR(function() {
+			exports.tapi('types_save', model, ERROR(function() {
 
 				EXEC('common/refresh');
 				hide();

@@ -1,16 +1,16 @@
-<div data-scope="~PATH~ datagrid__init:?/init">
+<div data-plugin="~PATH~ datagrid__init:?/init">
 	<div class="toolbar toolbar-bg" style="padding-left:20px">
 		<div class="pull-right mt2">
-			<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="far fa-copy"></i></span> <span class="badge badge-gray"><code class="b" data-bind="?.id__text"></code></span>
+			<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="ti ti-copy"></i></span> <span class="badge badge-gray"><code class="b" data-bind="?.id__text"></code></span>
 		</div>
 		<nav class="pull-left">
-			<button class="exec" data-exec="?/refresh"><i class="far fa-sync"></i>@(Refresh)</button>
-			<button class="exec" data-exec="?/update"><i class="far fa-cog"></i>@(Settings)</button>
+			<button class="exec" data-exec="?/refresh"><i class="ti ti-sync"></i>@(Refresh)</button>
+			<button class="exec" data-exec="?/update"><i class="ti ti-cog"></i>@(Settings)</button>
 		</nav>
 		<nav class="pull-left ml10" data-bind="?.checked__disabled .selection:!value || !value.length">
-			<button class="exec b" data-exec="?/create"><i class="far fa-plus-circle green"></i>@(Create)</button>
-			<button class="exec selection" data-exec="?/copyjson" disabled><i class="far fa-copy"></i>@(Copy as JSON)</button>
-			<button class="exec selection" data-exec="?/remove"  disabled><i class="fas fa-trash-alt red"></i>@(Remove)</button>
+			<button class="exec b" data-exec="?/create"><i class="ti ti-plus-circle green"></i>@(Create)</button>
+			<button class="exec selection" data-exec="?/copyjson" disabled><i class="ti ti-copy"></i>@(Copy as JSON)</button>
+			<button class="exec selection" data-exec="?/remove"  disabled><i class="ti ti-trash red"></i>@(Remove)</button>
 		</nav>
 	</div>
 	<div class="padding"></div>
@@ -43,7 +43,7 @@
 					case 'id':
 						obj.width = 110;
 						obj.monospace = 1;
-						// obj.template = '<div class=\\\"exec\\\" data-exec=\\\"?/copyid\\\" data-prevent=\\\"true\\\"><span class=\\\"far fa-copy mr5\\\"></span>{{ id }}</div>';
+						// obj.template = '<div class=\\\"exec\\\" data-exec=\\\"?/copyid\\\" data-prevent=\\\"true\\\"><span class=\\\"ti ti-copy mr5\\\"></span>{{ id }}</div>';
 						break;
 					case 'name':
 						obj.width = 200;
@@ -84,6 +84,14 @@
 						obj.width = 150;
 						obj.format = '[date]';
 						break;
+					case 'password':
+						obj.sort = false;
+						obj.filter = false;
+						obj.width = 150;
+						obj.align = 1;
+						obj.monospace = true;
+						obj.template = '{{ if {0} }}*********{{ fi }}'.format(col.id);
+						break;
 					case 'icon':
 						obj.sort = false;
 						obj.filter = false;
@@ -94,7 +102,7 @@
 					case 'color':
 						obj.width = 120;
 						obj.monospace = true;
-						obj.template = '{{ if {0} }}<i class=\\\"fas fa-circle\\\" style=\\\"color:{{ {0} }}\\\"></i> {{ {0} }}{{ fi }}'.format(col.id);
+						obj.template = '{{ if {0} }}<i class=\\\"ti ti-circle\\\" style=\\\"color:{{ {0} }}\\\"></i> {{ {0} }}{{ fi }}'.format(col.id);
 						break;
 				}
 
@@ -109,7 +117,7 @@
 				columns.push('{' + str + '}');
 			}
 
-			SET('?.id', ID);
+			exports.set('id', ID);
 			exports.element.find('.padding').append(('<div data' + '---="datagrid__{0}.response__height:.ui-windows-item;margin:135;checked:?.checked;exec:?/filter;click:?/detail" class="invisible"><scri' + 'pt type="text/html">[{1}]</scr' + 'ipt></div>').format(exports.name, columns.join(',')));
 			setTimeout(() => COMPILE(), 10);
 		};
@@ -119,7 +127,7 @@
 		};
 
 		exports.refresh = function() {
-			NUL('?.response');
+			exports.set('response', null);
 		};
 
 		exports.detail = function(row) {
@@ -128,12 +136,12 @@
 
 		exports.remove = function() {
 			var model = exports.model;
-			SETTER('approve/show', '@(Are you sure you want to remove selected ({0}x) records?)'.format(model.checked.length), '"far fa-trash-alt" @(Remove)', function() {
+			SETTER('approve/show', '@(Are you sure you want to remove selected ({0}x) records?)'.format(model.checked.length), '"ti ti-trash" @(Remove)', function() {
 				model.checked.wait(function(item, next) {
 					var url = 'DELETE /remove/{0}/{1}/'.format(ID, item.id);
 					FUNC.log(url);
-					AJAX(url, next);
-				}, () => NUL('?.response'));
+					exports.ajax(url, next);
+				}, () => exports.set('response', null));
 			});
 		};
 
@@ -154,7 +162,7 @@
 			SETTER('loading/show');
 
 			model.checked.wait(function(item, next) {
-				TAPI('data_export/{0}/{1}'.format(ID, item.id), ERROR(function(response) {
+				exports.tapi('data_export/{0}/{1}'.format(ID, item.id), ERROR(function(response) {
 					response.id = '@' + response.id;
 					response.collection = ID;
 					delete response.dtremoved;
@@ -221,10 +229,10 @@
 
 			var url = QUERIFY('GET /list/{0}/'.format(ID), data);
 			FUNC.log(url);
-			AJAX(url, function(response) {
+			exports.ajax(url, function(response) {
 				var data = PLUGINS.common.prepare(ID, response.items);
 				response.items = data.body;
-				SET('?.response', response, gtype === 'refresh' ? 'noscroll' : null);
+				exports.set('response', response, gtype === 'refresh' ? 'noscroll' : null);
 			});
 
 		};
