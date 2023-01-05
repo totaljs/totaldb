@@ -13,7 +13,7 @@
 		<div data---="input__?.endpoint__required:0;innerlabel:1;placeholder:https\://yourapi.com">@(Endpoint for changelog)</div>
 		<div class="help">@(The app will notify your changelog endpoint if the Data or Type will be changed. All data are sent via POST method.)</div>
 	</div>
-	<nav data---="validate__?__if:value.password===value.passwordreply">
+	<nav data---="validate__?__if:value.password===value.passwordreply;changes:1">
 		<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
 		<button name="cancel">@(Cancel)</button>
 	</nav>

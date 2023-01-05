@@ -156,7 +156,7 @@
 					var index = 100;
 					var maptemplate = Tangular.compile($('#template_map').html());
 					var save = function(el, obj) {
-						exports.tapi('types_offset @sync', { id: obj.id, x: obj.x, y: obj.y });
+						exports.tapi('types_offset @sync', { id: obj.id, x: obj.x, y: obj.y }, NOOP);
 					};
 
 					var make = function(el, obj) {
