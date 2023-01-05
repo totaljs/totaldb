@@ -410,7 +410,7 @@ NEWSCHEMA('Types', function(schema) {
 							var db = DB();
 							var tmp = queue.splice(0);
 							for (var item of tmp) {
-								var table = 'tbl_' + item.collection;
+								var table = item.collection;
 								item.collection = undefined;
 								item.clear = undefined;
 								if (item.id[0] === '@')
