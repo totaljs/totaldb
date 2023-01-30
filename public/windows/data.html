@@ -17,7 +17,7 @@
 </div>
 
 <script>
-	PLUGIN('~PATH~ datagrid', function(exports) {
+	PLUGIN('? datagrid', function(exports) {
 
 		var ID;
 
@@ -138,7 +138,7 @@
 			var model = exports.model;
 			SETTER('approve/show', '@(Are you sure you want to remove selected ({0}x) records?)'.format(model.checked.length), '"ti ti-trash" @(Remove)', function() {
 				model.checked.wait(function(item, next) {
-					var url = 'DELETE /remove/{0}/{1}/'.format(ID, item.id);
+					var url = 'DELETE /remove/{0}/{1}/'.format(ID, item.id) + common.openplatform;
 					FUNC.log(url);
 					exports.ajax(url, next);
 				}, () => exports.set('response', null));
@@ -162,7 +162,7 @@
 			SETTER('loading/show');
 
 			model.checked.wait(function(item, next) {
-				exports.tapi('data_export/{0}/{1}'.format(ID, item.id), ERROR(function(response) {
+				exports.tapi('data_export/{0}/{1}'.format(ID, item.id) + common.openplatform, ERROR(function(response) {
 					response.id = '@' + response.id;
 					response.collection = ID;
 					delete response.dtremoved;
@@ -227,7 +227,7 @@
 
 			data.where = data.where.join('&');
 
-			var url = QUERIFY('GET /list/{0}/'.format(ID), data);
+			var url = QUERIFY('GET /list/{0}/'.format(ID) + common.openplatform, data);
 			FUNC.log(url);
 			exports.ajax(url, function(response) {
 				var data = PLUGINS.common.prepare(ID, response.items);

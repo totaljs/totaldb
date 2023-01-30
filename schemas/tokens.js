@@ -1,3 +1,6 @@
+// Permissions
+OpenPlatform.permissions.push({ name: 'Tokens', value: 'tokens' });
+
 NEWSCHEMA('Tokens', function(schema) {
 
 	schema.define('id', String);
@@ -8,20 +11,16 @@ NEWSCHEMA('Tokens', function(schema) {
 
 	schema.setQuery(function($) {
 
-		if (!$.user.sa) {
-			$.invalid(401);
+		if (UNAUTHORIZED($, 'tokens'))
 			return;
-		}
 
 		DB().find('tbl_token').fields('id,name,token,options,types,dtcreated,dtupdated,dtaccess').callback($.callback);
 	});
 
 	schema.setRead(function($) {
 
-		if (!$.user.sa) {
-			$.invalid(401);
+		if (UNAUTHORIZED($, 'tokens'))
 			return;
-		}
 
 		var id = $.id;
 		DB().read('tbl_token').id(id).error(404).callback($.callback);
@@ -29,10 +28,8 @@ NEWSCHEMA('Tokens', function(schema) {
 
 	schema.setSave(function($, model) {
 
-		if (!$.user.sa) {
-			$.invalid(401);
+		if (UNAUTHORIZED($, 'tokens'))
 			return;
-		}
 
 		var db = DB();
 		var done = function() {
@@ -55,10 +52,8 @@ NEWSCHEMA('Tokens', function(schema) {
 
 	schema.setRemove(function($) {
 
-		if (!$.user.sa) {
-			$.invalid(401);
+		if (UNAUTHORIZED($, 'tokens'))
 			return;
-		}
 
 		DB().remove('tbl_token').id($.id).error(404).callback($.done());
 	});

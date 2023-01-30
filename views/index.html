@@ -11,7 +11,8 @@
 	<meta name="robots" content="all,follow" />
 	<link rel="stylesheet" href="@{'%cdn'}/spa.min@19.css" />
 	<script src="@{'%cdn'}/spa.min@19.js"></script>
-	@{import('meta', 'head', 'ui.js', 'default.css', 'favicon.ico')}
+	<script src="@{REPO.ui}"></script>
+	@{import('meta', 'head', 'default.css', 'favicon.ico')}
 </head>
 <body data---="exec">
 
@@ -39,38 +40,44 @@
 	<div data---="importer__common.form__if:formtokens;url:/forms/tokens.html"></div>
 	<div data---="importer__common.form__if:formconfig;url:/forms/config.html"></div>
 
-	<div data---="columns__null__parent:window" class="invisible">
-		<section data-size="60" class="menu">
-			<span class="mainmenu exec" data-exec="common/menu"><i class="ti ti-menu"></i></span>
-			<nav data-bind="common.ready__show">
-				<span class="exec" data-exec="common/create" title="@(New type)"><i class="ti ti-plus-circle green"></i></span>
-				<span class="exec" data-exec="common/tokens" title="@(Tokens)"><i class="ti ti-plug"></i></span>
-				<hr />
-				<span class="exec" data-exec="common/querybuilder" title="@(Query Builder)"><i class="ti ti-file-search"></i></span>
-				<span class="exec" data-exec="common/nodes" title="@(Active types)"><i class="ti ti-list"></i></span>
-			</nav>
-		</section>
-		<section>
-			<div data---="layout__null__parent:auto" class="invisible">
-				<script type="text/plain">
-					{
-						bottom: { size: 140, resize: true, minsize: 100 },
-						main: {}
-					}
-				</script>
+	<ui-component name="ready" class="invisible">
+		<div data---="columns__null__parent:window" class="invisible">
+			<section data-size="60" class="menu">
+				<span class="mainmenu exec" data-exec="common/menu"><i class="ti ti-menu"></i></span>
+				<nav data-bind="common.ready__show">
+					@{if user.sa || user.permissions.include('typescreate')}
+					<span class="exec" data-exec="common/create" title="@(New type)"><i class="ti ti-plus-circle green"></i></span>
+					@{fi}
+					@{if user.sa || user.permissions.include('tokens')}
+					<span class="exec" data-exec="common/tokens" title="@(Tokens)"><i class="ti ti-plug"></i></span>
+					<hr />
+					@{fi}
+					<span class="exec" data-exec="common/querybuilder" title="@(Query Builder)"><i class="ti ti-file-search"></i></span>
+					<span class="exec" data-exec="common/nodes" title="@(Active types)"><i class="ti ti-list"></i></span>
+				</nav>
+			</section>
+			<section>
+				<div data---="layout__null__parent:auto" class="invisible">
+					<script type="text/plain">
+						{
+							bottom: { size: 140, resize: true, minsize: 100 },
+							main: {}
+						}
+					</script>
 
-				<section data-type="main">
-					<div data---="viewbox__null__parent:auto;visibleX:1" class="invisible">
-						<div data---="flow__common.map__width:6000;height:6000;grid:15;outputoffsetY:2;horizontal:1;dblclick:common/browse;contextmenu:common/contextmenu;markers:false"></div>
-					</div>
-				</section>
+					<section data-type="main">
+						<div data---="viewbox__null__parent:auto;visibleX:1" class="invisible">
+							<div data---="flow__common.map__width:6000;height:6000;grid:15;outputoffsetY:2;horizontal:1;dblclick:common/browse;contextmenu:common/contextmenu;markers:false"></div>
+						</div>
+					</section>
 
-				<section data-type="bottom">
-					<div data-import="url:/parts/logger.html;path:logger"></div>
-				</section>
-			</div>
-		</section>
-	</div>
+					<section data-type="bottom">
+						<div data-import="url:/parts/logger.html;path:logger"></div>
+					</section>
+				</div>
+			</section>
+		</div>
+	</ui-component>
 
 	<script type="text/html" id="template_map">
 		<figure data-id="{{ value.id }}" class="flowtype">
@@ -88,7 +95,11 @@
 		</figure>
 	</script>
 
+	@{json(user.json(), 'userdata')}
+
 	<script>
+
+		var user = PARSE('#userdata');
 		var common = {};
 
 		common.windows = [];
@@ -96,7 +107,20 @@
 		common.cache = {};
 		common.ready = false;
 
-		DEF.api = '/';
+		common.openplatform = NAV.query.openplatform || '';
+
+		if (common.openplatform) {
+			(function() {
+				var hostname = common.openplatform.substring(0, common.openplatform.indexOf('/', 10));
+				hostname && IMPORT(hostname + '/iframe.js');
+				common.openplatform = '?openplatform=' + encodeURIComponent(common.openplatform);
+			})();
+		}
+
+		(function() {
+			var url = '/' + common.openplatform;
+			DEF.api = url;
+		})();
 
 		PLUGIN('common', function(exports) {
 
@@ -247,7 +271,7 @@
 					return;
 				}
 
-				PUSH('?.windows', { id: id, cachekey: id, html: '<div data-import="url:@{#}/windows/nodes.html"></div>', title: '@(Active types)', actions: { move: true, autosave: true, close: true, maximize: false, minimize: false }, offset: { x: ((WW / 2) - 150) >> 0, y: ((WH / 2) - 200) >> 0, width: 300, height: 400, minwidth: 200, minheight: 300, maxwidth: 500, maxheight: 800 }});
+				exports.push('windows', { id: id, cachekey: id, html: '<ui-import config="url:@{#}/windows/nodes.html"></ui-import>', title: '@(Active types)', actions: { move: true, autosave: true, close: true, maximize: false, minimize: false }, offset: { x: ((WW / 2) - 150) >> 0, y: ((WH / 2) - 200) >> 0, width: 300, height: 400, minwidth: 200, minheight: 300, maxwidth: 500, maxheight: 800 }});
 			};
 
 			exports.password = function() {
@@ -286,6 +310,7 @@
 					opt.element = el;
 
 				opt.items = [];
+
 				opt.items.push({ id: 'data', name: '@(Show data)', icon: 'ti ti-file-search', classname: 'b' });
 				opt.items.push({ id: 'form', name: '@(Insert a record)', icon: 'ti ti-plus-circle green' });
 				opt.items.push({ id: 'edit', name: '@(Edit type)', icon: 'ti ti-pencil-alt' });
@@ -294,8 +319,12 @@
 				opt.items.push({ id: 'copy', name: '@(JSON)', icon: 'ti ti-copy' });
 				opt.items.push({ id: 'copyschema', name: '@(Schema)', icon: 'ti ti-copy' });
 				opt.items.push({ id: 'copyinline', name: '@(Inline schema)', icon: 'ti ti-copy' });
-				opt.items.push('-');
-				opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'ti ti-trash red' });
+
+				if (!UNAUTHORIZED($, 'typesremove')) {
+					opt.items.push('-');
+					opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'ti ti-trash red' });
+				}
+
 				opt.callback = function(selected) {
 					switch (selected.id) {
 						case 'data':
@@ -396,12 +425,12 @@
 				if (!type.icon)
 					type.icon = 'ti ti-database';
 				win.title = '<i class="{icon} mr5"></i>{name}'.args(type);
-				win.html = '<div data-import="url:/windows/data.html;path:{1}" data-id="{0}"></div>'.format(id, win.id);
+				win.html = '<ui-import config="url:/windows/data.html;path:{1}" data-id="{0}"></ui-import>'.format(id, win.id);
 				win.destroy = function() {
 					delete W[win.id];
 				};
 
-				PUSH('?.windows', win);
+				exports.push('windows', win);
 			};
 
 			exports.detail = function(el, docid) {
@@ -421,7 +450,7 @@
 				win.offset = { x: 200, y: 100, width: 500, height: 500, minwidth: 400, minheight: 300 };
 				win.actions = { move: true, close: true, resize: true, maximize: true, minimize: false, autosave: true };
 				win.title = '<i class="{icon} mr5"></i>{name}'.args(type);
-				win.html = '<div data-import="url:/windows/form.html;path:{1}" data-id="{0}-{2}"></div>'.format(id, win.id, docid || '');
+				win.html = '<ui-import config="url:/windows/form.html;path:{1}" data-id="{0}-{2}"></ui-import>'.format(id, win.id, docid || '');
 				win.destroy = function() {
 					delete W[win.id];
 				};
@@ -516,29 +545,47 @@
 				opt.items = [];
 
 				if (common.ready) {
-					opt.items.push({ id: 'create', name: '@(New type)', icon: 'ti ti-plus-circle green', classname: 'b' });
+
+					if (!UNAUTHORIZED($, 'typescreate'))
+						opt.items.push({ id: 'create', name: '@(New type)', icon: 'ti ti-plus-circle green', classname: 'b' });
+
 					opt.items.push({ id: 'nodes', name: '@(Active types)', icon: 'ti ti-list' });
 					opt.items.push('-');
 				}
 
-				opt.items.push({ id: 'config', name: '@(Configure)', icon: 'ti ti-cog' });
-				opt.items.push({ id: 'credentials', name: '@(Change credentials)', icon: 'ti ti-key' });
+				if (!UNAUTHORIZED($, 'config'))
+					opt.items.push({ id: 'config', name: '@(Configure)', icon: 'ti ti-cog' });
+
+				if (!user.id)
+					opt.items.push({ id: 'credentials', name: '@(Change credentials)', icon: 'ti ti-key' });
 
 				if (common.ready) {
-					opt.items.push({ id: 'tokens', name: '@(API Tokens)', icon: 'ti ti-plug' });
+
+					if (!UNAUTHORIZED($, 'tokens'))
+						opt.items.push({ id: 'tokens', name: '@(API Tokens)', icon: 'ti ti-plug' });
+
 					opt.items.push({ id: 'docs', name: '@(Generate help)', icon: 'ti ti-book' });
 					opt.items.push('-');
-					opt.items.push({ id: 'export', name: '@(Export types)', icon: 'ti ti-cloud-download' });
-					opt.items.push({ id: 'exportall', name: '@(Export types + data)', icon: 'ti ti-cloud-download' });
-					opt.items.push({ id: 'import', name: '@(Import file)', icon: 'ti ti-cloud-upload', classname: 'b' });
-					opt.items.push({ id: 'paste', name: '@(Paste JSON)', icon: 'ti ti-paste', classname: 'b' });
+
+					if (!UNAUTHORIZED($, 'backuprestore')) {
+						opt.items.push({ id: 'export', name: '@(Export types)', icon: 'ti ti-cloud-download' });
+						opt.items.push({ id: 'exportall', name: '@(Export types + data)', icon: 'ti ti-cloud-download' });
+						opt.items.push({ id: 'import', name: '@(Import file)', icon: 'ti ti-cloud-upload', classname: 'b' });
+						opt.items.push({ id: 'paste', name: '@(Paste JSON)', icon: 'ti ti-paste', classname: 'b' });
+					}
+
 					opt.items.push('-');
 					opt.items.push({ id: 'maintenance', name: '@(Maintenance)', icon: 'ti ti-wrench' });
-					opt.items.push({ id: 'clear', name: '@(Clear database)', icon: 'ti ti-recycle red' });
+
+					if (!UNAUTHORIZED($, 'clear'))
+						opt.items.push({ id: 'clear', name: '@(Clear database)', icon: 'ti ti-recycle red' });
 				}
 
-				opt.items.push('-');
-				opt.items.push({ id: 'logout', name: '@(Logout)', icon: 'ti ti-power-off red' });
+				if (!user.id) {
+					opt.items.push('-');
+					opt.items.push({ id: 'logout', name: '@(Logout)', icon: 'ti ti-power-off red' });
+				}
+
 				opt.callback = function(selected) {
 					exports[selected.id]();
 				};
@@ -574,17 +621,17 @@
 			};
 
 			exports.export = function() {
-				location.href = '/internal/backup/';
+				location.href = '/internal/backup/' + common.openplatform;
 			};
 
 			exports.exportall = function() {
-				location.href = '/internal/backup/?data=1';
+				location.href = '/internal/backup/' + (common.openplatform ? '&' : '?') + 'data=1';
 			};
 
 			exports.import = function() {
 				var opt = {};
 				opt.multiple = false;
-				opt.url = '/internal/restore/';
+				opt.url = '/internal/restore/' + common.openplatform;
 				opt.callback = function(response, err) {
 
 					if (err) {
@@ -645,11 +692,11 @@
 				win.offset = { x: 200, y: 100, width: 700, height: 500, minwidth: 500, minheight: 300 };
 				win.actions = { move: true, close: true, resize: true, maximize: true, minimize: false, autosave: true };
 				win.title = '<i class="ti ti-file-search mr5"></i>@(QueryBuilder)';
-				win.html = '<div data-import="url:/windows/querybuilder.html;path:{0}"></div>'.format(win.id);
+				win.html = '<ui-import config="url:/windows/querybuilder.html;path:{0}"></ui-import>'.format(win.id);
 				win.destroy = function() {
 					delete W[win.id];
 				};
-				PUSH('?.windows', win);
+				exports.push('windows', win);
 			};
 
 			ON('knockknock', function(counter) {
@@ -693,7 +740,7 @@
 		};
 
 		FUNC.log = function(url, data) {
-			EXEC('logger/append', url.replace(' ', function(text) {
+			EXEC('logger/append', (url + '&').replace(/openplatform=.*?&/, '').replace(/\?&/, '').replace(' ', function(text) {
 				return ' ' + location.origin;
 			}), data);
 		};

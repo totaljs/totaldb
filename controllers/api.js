@@ -3,7 +3,7 @@ exports.install = function() {
 	CORS();
 
 	ROUTE('+GET    /', 'index');
-	ROUTE('-GET    /', 'login');
+	ROUTE('-GET    /', login);
 	ROUTE('+GET    /logout/', logout);
 	ROUTE('+GET    /docs/', docs);
 	ROUTE('+GET    /docs/{id}/', docs);
@@ -67,6 +67,14 @@ exports.install = function() {
 
 };
 
+function login() {
+	var self = this;
+	if (CONF.op_reqtoken && CONF.op_restoken)
+		self.throw401();
+	else
+		self.view('login');
+}
+
 function socket() {
 	var self = this;
 	self.autodestroy(() => MAIN.ws = null);
@@ -75,11 +83,12 @@ function socket() {
 
 function logout() {
 	var self = this;
-	EXEC('-Auth --> logout', EMPTYOBJECT, () => self.redirect('/'), self);
+	CALL('Auth --> logout').controller(self).callback(() => self.redirect('/'));
 }
 
 function restore() {
-	EXEC('-Types --> restore', null, this.callback(), this);
+	var self = this;
+	CALL('Types --> restore').controller(self).callback(self.callback());
 }
 
 function docs(id) {

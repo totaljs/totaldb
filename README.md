@@ -8,7 +8,6 @@
 
 ---
 
-
 __Download and install dependencies__:
 
 ```

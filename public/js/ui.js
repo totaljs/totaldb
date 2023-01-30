@@ -55,7 +55,7 @@ Author: Peter Širka
 
 Component: j-Edit
 Version: 1
-Updated: 2022-07-26T09:07:00.000Z
+Updated: 2022-12-26T11:31:00.000Z
 Author: Peter Širka
 
 
@@ -73,7 +73,7 @@ Author: Peter Širka
 
 Component: j-Exec
 Version: 1
-Updated: 2022-06-24T09:25:00.000Z
+Updated: 2022-12-27T16:24:01.000Z
 Author: Peter Širka
 
 
@@ -103,7 +103,7 @@ Author: Peter Širka
 
 Component: j-Input
 Version: 1
-Updated: 2022-12-02T22:35:21.000Z
+Updated: 2022-12-16T16:25:21.000Z
 Author: Peter Širka
 
 
@@ -641,6 +641,8 @@ CSS(`.ui-approve-noscroll, .ui-approve-noscroll body { overflow: hidden; }
 
 .ui-dark .ui-empty-table { color: #999; }
 .ui-dark .ui-empty-cell > i { background-color: #303030; color: #404040; }
+
+.exec { cursor: pointer; }
 
 .ui-flow { position: relative; transform-origin: top left; transition: transform 0.3s; }
 .ui-flow .component { position: absolute; left: 150px; top: 150px; border: 2px solid #E0E0E0; background-color: #FFF; border-radius: var(--radius); box-shadow: 1px 1px 10px rgba(0,0,0,0.03); }
@@ -6242,11 +6244,11 @@ COMPONENT('edit', 'dateformat:yyyy-MM-dd;padding:10;floating:0', function(self, 
 			if (width < config.minwidth)
 				width = config.minwidth;
 
-			floating.css({ width: width, left: (offset.left - config.padding) + (opt.offsetX || 0), top: (offset.top - config.padding) + (opt.offsetY || 0), font: el.css('font') });
+			var align = opt.align || '';
+			floating.css({ width: width, left: (offset.left - config.padding) + (opt.offsetX || 0), top: (offset.top - config.padding) + (opt.offsetY || 0), font: el.css('font'), 'text-align': align });
 			floating.html(empty ? '' : value);
 			floating.rclass('hidden');
 			floating[0].$edit = opt;
-
 		} else {
 			floating.aclass('hidden');
 			delete floating[0].$edit;
@@ -6558,6 +6560,7 @@ COMPONENT('exec', function(self, config) {
 
 	self.readonly();
 	self.blind();
+	self.singleton();
 
 	self.register = function(fn) {
 		extensions.push(fn);
@@ -6661,9 +6664,10 @@ COMPONENT('exec', function(self, config) {
 			};
 		};
 
-		self.event('contextmenu', config.selector3 || '.exec3', fn('3', true));
-		self.event('dblclick', config.selector2 || '.exec2', fn('2'));
-		self.event('click', config.selector || '.exec', fn(''));
+		var el = $(document.body);
+		el.on('contextmenu', config.selector3 || '.exec3', fn('3', true));
+		el.on('dblclick', config.selector2 || '.exec2', fn('2'));
+		el.on('click', config.selector || '.exec', fn(''));
 	};
 });
 
@@ -10219,7 +10223,7 @@ COMPONENT('input', 'maxlength:200;innerlabel:0;tabindex:0;dirkey:name;dirvalue:i
 	self.password = function(show) {
 		var visible = show == null ? input.attr('type') === 'text' : show;
 		input.attr('type', visible ? 'password' : 'text');
-		self.find(cls2 + '-icon-right').find('i').tclass(config.ricon, visible).tclass('ti-lock', !visible);
+		self.find(cls2 + '-icon-right').find('i').tclass(config.ricon, visible).tclass('ti-eye-slash', !visible).tclass('ti-eye', visible);
 	};
 
 	self.preparevalue = function(value) {
@@ -10407,7 +10411,7 @@ COMPONENT('input', 'maxlength:200;innerlabel:0;tabindex:0;dirkey:name;dirvalue:i
 				if (!config.align && !config.innerlabel)
 					config.align = 1;
 			} else if (config.type === 'time') {
-				config.ricon = 'clock-o';
+				config.ricon = 'clock';
 				if (!config.align && !config.innerlabel)
 					config.align = 1;
 			} else if (config.type === 'search')
@@ -10589,7 +10593,7 @@ COMPONENT('input', 'maxlength:200;innerlabel:0;tabindex:0;dirkey:name;dirvalue:i
 					value.setSeconds((tmp[2] || '0').parseInt());
 					break;
 				case 'slug':
-					value = value.slug();
+					value = value.slug();	
 					break;
 			}
 		} else {
@@ -12377,7 +12381,7 @@ COMPONENT('menu', 'style:2', function(self, config, cls) {
 			var leftoffset = children.offset().left;
 			var childrenwidth = children.width();
 			var suboffset = childrenwidth + leftoffset;
-			if (suboffset > WW)
+			if (suboffset > WW) 
 				children.css('left', -childrenwidth);
 		};
 	};

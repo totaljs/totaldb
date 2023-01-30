@@ -1,4 +1,9 @@
+var USER = { sa: true };
 var BLACKLIST = {};
+
+USER.json = function() {
+	return { sa: true };
+};
 
 AUTH(function($) {
 
@@ -35,11 +40,17 @@ AUTH(function($) {
 		}
 	}
 
+	// Setup interface
+	if (CONF.op_reqtoken && CONF.op_restoken) {
+		OpenPlatform.auth($);
+		return;
+	}
+
 	var token = $.cookie(CONF.cookie);
 	if (token) {
 		var session = DECRYPTREQ($.req, token, CONF.cookie_secret);
 		if (session && session.id === PREF.user.id && session.expire > NOW) {
-			$.success({ sa: true });
+			$.success(USER);
 			return;
 		} else
 			BLACKLIST[$.ip] = (BLACKLIST[$.ip] || 0) + 1;

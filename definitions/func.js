@@ -104,6 +104,11 @@ FUNC.reconfigure = function(callback) {
 
 	require('querybuilderpg').init('default', PREF.db, PREF.pools || 0);
 
+	CONF.op_reqtoken = PREF.op_reqtoken;
+	CONF.op_restoken = PREF.op_restoken;
+	CONF.op_icon = 'ti ti-database';
+	CONF.name = PREF.name;
+
 	// check DB
 	var db = DB();
 	db.query('SELECT table_name AS id FROM information_schema.tables WHERE table_schema=\'public\'').callback(function(err, response) {

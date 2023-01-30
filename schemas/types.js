@@ -1,3 +1,11 @@
+// Permissions
+OpenPlatform.permissions.push({ name: 'Types: create', value: 'typescreate' });
+OpenPlatform.permissions.push({ name: 'Types: update', value: 'typesupdate' });
+OpenPlatform.permissions.push({ name: 'Types: remove', value: 'typesremove' });
+OpenPlatform.permissions.push({ name: 'Types: clear', value: 'typesclear' });
+
+OpenPlatform.permissions.push({ name: 'Backup & Restore', value: 'backuprestore' });
+
 NEWSCHEMA('Attr', function(schema) {
 	schema.define('id', 'String');
 	schema.define('name', 'String', true);
@@ -64,11 +72,6 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.setQuery(function($) {
 
-		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
-			$.invalid(401);
-			return;
-		}
-
 		if (!MAIN.ready) {
 			$.invalid(503);
 			return;
@@ -78,11 +81,6 @@ NEWSCHEMA('Types', function(schema) {
 	});
 
 	schema.addWorkflow('count', function($) {
-
-		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
-			$.invalid(401);
-			return;
-		}
 
 		if (!MAIN.ready) {
 			$.invalid(503);
@@ -101,11 +99,6 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.setRead(function($) {
 
-		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
-			$.invalid(401);
-			return;
-		}
-
 		if (!MAIN.ready) {
 			$.invalid(503);
 			return;
@@ -117,10 +110,9 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.setSave(async function($, model) {
 
-		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
-			$.invalid(401);
+		var notallowed = !$.user.options || !$.user.options.types;
+		if (notallowed && UNAUTHORIZED($, model.id ? 'typesupdate' : 'typescreate'))
 			return;
-		}
 
 		if (!MAIN.ready) {
 			$.invalid(503);
@@ -179,10 +171,8 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.setRemove(function($) {
 
-		if (!$.user.sa && (!$.user.options || !$.user.options.types)) {
-			$.invalid(401);
+		if (UNAUTHORIZED($, 'typesremove'))
 			return;
-		}
 
 		if (!MAIN.ready) {
 			$.invalid(503);
@@ -237,11 +227,6 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.addWorkflow('cl', async function($) {
 
-		if (!$.user.sa) {
-			$.invalid(401);
-			return;
-		}
-
 		if (!MAIN.ready) {
 			$.invalid(503);
 			return;
@@ -252,10 +237,8 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.addWorkflow('backup', async function($) {
 
-		if (!$.user.sa) {
-			$.invalid(401);
+		if (UNAUTHORIZED($, 'backuprestore'))
 			return;
-		}
 
 		if (!MAIN.ready) {
 			$.invalid(503);
@@ -330,10 +313,8 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.addWorkflow('restore', function($) {
 
-		if (!$.user.sa) {
-			$.invalid(401);
+		if (UNAUTHORIZED($, 'backuprestore'))
 			return;
-		}
 
 		if (!MAIN.ready) {
 			$.invalid(503);
@@ -454,10 +435,8 @@ NEWSCHEMA('Types', function(schema) {
 
 	schema.addWorkflow('clear', async function($) {
 
-		if (!$.user.sa) {
-			$.invalid(401);
+		if (UNAUTHORIZED($, 'typesclear'))
 			return;
-		}
 
 		if (!MAIN.ready) {
 			$.invalid(503);

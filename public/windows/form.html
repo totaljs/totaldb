@@ -77,7 +77,7 @@
 </div>
 
 <script>
-	PLUGIN('~PATH~ dataform', function(exports) {
+	PLUGIN('? dataform', function(exports) {
 
 		var ID;
 
@@ -116,7 +116,7 @@
 			}
 
 			if (ID[1]) {
-				var url = 'GET /read/{0}/{1}'.format(ID[0], ID[1]);
+				var url = 'GET /read/{0}/{1}'.format(ID[0], ID[1]) + common.openplatform;
 				FUNC.log(url);
 				exports.ajax(url, ERROR(function(response) {
 					for (var item of attrs) {
@@ -154,9 +154,9 @@
 
 			opt.element = el;
 			opt.items = function(q, next) {
-				var url = QUERIFY('GET /find/{typeid}/'.arg(attr), { fields: 'id,name', name: q });
+				var url = QUERIFY('GET /find/{typeid}/'.arg(attr) + common.openplatform, { fields: 'id,name', name: q });
 				FUNC.log(url);
-				exports.ajax(url+ ' ERROR', function(response) {
+				exports.ajax(url + ' ERROR', function(response) {
 					response.unshift({ id: null, template: '<b>@(Create)</b>' });
 					next(response);
 				});
@@ -218,7 +218,7 @@
 				return;
 			}
 
-			var url = 'POST /save/{0}/'.format(ID[0]);
+			var url = 'POST /save/{0}/'.format(ID[0]) + common.openplatform;
 			FUNC.log(url, data);
 			exports.ajax(url + ' ERROR', data, function() {
 				var key = 'data' + ID[0];

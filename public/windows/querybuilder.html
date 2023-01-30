@@ -24,7 +24,7 @@
 </div>
 
 <script>
-	PLUGIN('~PATH~ querybuilder', function(exports) {
+	PLUGIN('? querybuilder', function(exports) {
 
 		var ID;
 
@@ -59,7 +59,7 @@
 			delete filter.typeid;
 
 			if (typeid) {
-				var url = QUERIFY('GET /find/{0}/'.format(typeid), filter);
+				var url = QUERIFY('GET /find/{0}/'.format(typeid) + common.openplatform, filter);
 				FUNC.log(url);
 				exports.ajax(url + ' ERROR', '?.response');
 			}
