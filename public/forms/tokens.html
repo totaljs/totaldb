@@ -1,14 +1,14 @@
-<div data---="box__common.form__if:~PATH~;title:@(Access tokens);icon:ti ti-plug;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-plugin="~PATH~">
+<ui-component name="box" path="common.form" config="if:~PATH~;title:@(Access tokens);icon:ti ti-plug;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" plugin="~PATH~">
 	<nav>
 		<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle green"></i>@(Create)</button>
 	</nav>
 	<div>
-		<div data---="empty__?.items__parent:auto;marign:20">
+		<ui-component name="empty" path="?.items" config="parent:auto;marign:20">
 			<script type="text/html">
 				@(The app doesn't contain any access tokens)
 			</script>
 			<div class="padding">
-				<div data-bind="?.items__template" class="listing2">
+				<ui-bind path="?.items" config="template" class="listing2 block">
 					<script type="text/html">
 						{{ foreach m in value }}
 						<figure data-id="{{ m.id }}" class="exec" data-exec="?/update">
@@ -22,14 +22,14 @@
 						</figure>
 						{{ end }}
 					</script>
-				</div>
+				</ui-bind>
 			</div>
-		</div>
+		</ui-component>
 	</div>
 	<nav>
 		<button name="cancel" style="width:100%">@(Cancel)</button>
 	</nav>
-</div>
+</ui-component>
 
 <script>
 
@@ -40,16 +40,16 @@
 		};
 
 		exports.refresh = function() {
-			exports.tapi('tokens @showloading ERROR', '?.items @hideloading');
+			exports.tapi('tokens @showloading ERROR', 'items @hideloading');
 		};
 
 		exports.update = function(el) {
 			var id = ATTRD(el);
-			exports.tapi('tokens_read/' + id, ERROR(function(response) {
+			exports.tapi('tokens_read/{0} ERROR'.format(id), function(response) {
 				var path = 'formtoken';
 				SET(path + ' @reset', response);
 				SET('common.form2', path);
-			}));
+			});
 		};
 
 		exports.remove = function(el) {

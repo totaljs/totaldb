@@ -5,23 +5,25 @@
 	.querybuilder footer { padding: 10px; }
 </style>
 
-<div data-plugin="~PATH~ querybuilder__init:?/init" class="querybuilder">
-	<div data---="columns__null__parent:auto" class="invisible">
+<ui-plugin path="~PATH~ querybuilder" config="init:?/init" class="querybuilder">
+	<ui-component name="columns" path="null" config="parent:auto" class="invisible">
 		<section data-size="400">
-			<div data---="properties__?.filter__parent:auto;margin:60"></div>
-			<footer data---="validate__?.filter">
-				<button class="exec button b" name="submit" disabled data-exec="?/run"><i class="ti ti-caret-square-right"></i>@(Execute)</button>
+			<ui-component name="properties" path="?.filter" config="parent:auto;margin:60"></ui-component>
+			<footer>
+				<ui-component name="validate" path="?.filter">
+					<button class="exec button b" name="submit" disabled data-exec="?/run"><i class="ti ti-caret-square-right"></i>@(Execute)</button>
+				</ui-component>
 			</footer>
 		</section>
 		<section>
-			<div data---="viewbox__null__parent:auto" class="invisible">
+			<ui-component name="viewbox" path="null" config="parent:auto" class="invisible">
 				<div class="padding">
-					<div data---="objecttree__?.response"></div>
+					<ui-component name="objecttree" path="?.response"></ui-component>
 				</div>
-			</div>
+			</ui-component>
 		</section>
-	</div>
-</div>
+	</ui-component>
+</ui-plugin>
 
 <script>
 	PLUGIN('? querybuilder', function(exports) {

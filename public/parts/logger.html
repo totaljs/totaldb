@@ -8,11 +8,11 @@
 	.~PATH~ .headline i { margin-right: 5px; }
 </style>
 
-<ui-plugin path="~PATH~ logger" config="aclass:1;init:?/init__{}">
+<ui-plugin path="~PATH~ logger" config="aclass:1;init:?/init;{}">
 	<div class="headline"><span class="exec pull-right" data-exec="?/clear"><i class="ti ti-trash red"></i></span><i class="ti ti-bug"></i><b>@(REST API Logger)</b></div>
-	<div data---="viewbox__null__parent:auto;scrollbarshadow:1;margin:30">
+	<ui-component name="viewbox" path="null" config="parent:auto;scrollbarshadow:1;margin:30">
 		<div class="target"></div>
-	</div>
+	</ui-component>
 </ui-plugin>
 
 <script>

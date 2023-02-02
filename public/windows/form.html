@@ -12,14 +12,14 @@
 	.dataform .multiline { position: relative; display: inline-block; white-space: break-spaces; }
 </style>
 
-<div data-plugin="~PATH~ dataform__init:?/init" class="dataform">
+<ui-plugin path="~PATH~ dataform" config="init:?/init" class="dataform">
 	<div class="toolbar toolbar-bg">
-		<button class="exec" data-exec="?/submit" data-bind="?.modified__enabled" disabled><i class="ti ti-save"></i>@(Save)</button>
+		<button class="exec" data-exec="?/submit"><ui-bind path="?.modified" config="enabled" disabled></ui-bind><i class="ti ti-save"></i>@(Save)</button>
 		<button class="exec" data-exec="?/copyjson"><i class="ti ti-code"></i>@(Copy JSON)</button>
 	</div>
-	<div data---="viewbox__null__parent:auto;margin:60">
+	<ui-component name="viewbox" path="null" config="parent:auto;margin:60">
 		<div class="padding">
-			<div data-bind="?.meta__template__show" class="m">
+			<ui-bind path="?.meta" config="template;show" class="m block">
 				<script type="text/html">
 					<div class="keyvalue">
 						<span>@(ID)</span>
@@ -34,8 +34,8 @@
 						<div>{{ value.dtupdated | format('[ts]') | empty }}{{ if value.dtupdated }} <span class="fs11 gray">{{ value.dtupdated | time2 }}</span>{{ fi }}</div>
 					</div>
 				</script>
-			</div>
-			<div data-bind="?.attrs__template">
+			</ui-bind>
+			<ui-bind path="?.attrs" config="template" class="block">
 				<script type="text/html">
 					<table class="attrs">
 						<tbody>
@@ -71,10 +71,10 @@
 						</tbody>
 					</table>
 				</script>
-			</div>
+			</ui-bind>
 		</div>
-	</div>
-</div>
+	</ui-component>
+</ui-plugin>
 
 <script>
 	PLUGIN('? dataform', function(exports) {

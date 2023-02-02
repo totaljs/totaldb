@@ -1,12 +1,14 @@
-<div data---="miniform__common.form__if:~PATH~;title:@(Paste JSON data);icon:ti ti-paste;autofocus:true;submit:?/submit;width:500" class="hidden" data-plugin="~PATH~">
+<ui-component name="miniform" path="common.form" config="if:~PATH~;title:@(Paste JSON data);icon:ti ti-paste;autofocus:true;submit:?/submit;width:500" class="hidden" plugin="~PATH~">
 	<div class="padding">
-		<div data---="input__?.data__type:multiline;required:1;height:250;monospace:1">@(JSON data)</div>
+		<ui-component name="input" path="?.data" config="type:multiline;required:1;height:250;monospace:1">@(JSON data)</ui-component>
 	</div>
-	<nav data---="validate__?">
-		<button name="submit" disabled><i class="ti ti-check-circle"></i>@(IMPORT)</button>
-		<button name="cancel">@(Cancel)</button>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(IMPORT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
 	</nav>
-</div>
+</ui-component>
 
 <script>
 

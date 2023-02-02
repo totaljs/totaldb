@@ -1,21 +1,21 @@
 <style>
 	.~PATH~ .listing2 .name i { width: 14px; margin-right: 5px; text-align: center; }
 </style>
-<div data---="box__common.form__if:~PATH~;icon:ti ti-code-branch;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-code-branch;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" plugin="~PATH~">
 	<div class="padding ~PATH~">
 
-		<div data-bind="?.id__template__show" class="m">
+		<ui-bind path="?.id" config="template;show" class="m block">
 			<script type="text/html">
 				<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="ti ti-copy"></i></span> <span class="badge badge-gray"><code>{{ value }}</code></span>
 			</script>
-		</div>
+		</ui-bind>
 
 		<div class="grid-2">
 			<div class="m">
-				<div data---="input__?.name__required:1;innerlabel:1;placeholder:@(Enter name)">@(Pluralized name)</div>
+				<ui-component name="input" path="?.name" config="required:1;innerlabel:1;placeholder:@(Enter name)">@(Pluralized name)</ui-component>
 			</div>
 			<div class="m">
-				<div data---="input__?.singular__required:1;innerlabel:1;placeholder:@(Enter name)">@(Singular)</div>
+				<ui-component name="input" path="?.singular" config="required:1;innerlabel:1;placeholder:@(Enter name)">@(Singular)</ui-component>
 			</div>
 		</div>
 
@@ -23,26 +23,26 @@
 			<div class="m">
 				<div class="grid-2">
 					<div class="m">
-						<div data---="input__?.color__type:color;placeholder:@(Choose color)">@(Color)</div>
+						<ui-component name="input" path="?.color" config="type:color;placeholder:@(Choose color)">@(Color)</ui-component>
 					</div>
 					<div class="m">
-						<div data---="input__?.icon__type:icon;placeholder:@(Choose icon)__'ti ti-database'">@(Icon)</div>
+						<ui-component name="input" path="?.icon" config="type:icon;placeholder:@(Choose icon)" default="'ti ti-database'">@(Icon)</ui-component>
 					</div>
 				</div>
 			</div>
 			<div class="m">
-				<div data---="input__?.category__dirsource:DEF.cl.categories;dircustom:1;dirplaceholder:@(Search or create new);placeholder:@(Choose a category)__''">@(Category)</div>
+				<ui-component name="input" path="?.category" config="dirsource:DEF.cl.categories;dircustom:1;dirplaceholder:@(Search or create new);placeholder:@(Choose a category)" default="''">@(Category)</ui-component>
 			</div>
 		</div>
 
 		<hr class="nmt" />
 
-		<div data---="input__?.note" class="m">@(Note)</div>
+		<ui-component name="input" path="?.note" class="m">@(Note)</ui-component>
 		<div>
 			<!--
-			<div data---="input__?.isbackup__type:checkbox">@(Auto backup changes)</div>
+			<ui-component name="input" path="?.isbackup" config="type:checkbox">@(Auto backup changes)</ui-component>
 			-->
-			<div data---="input__?.options.ispartial__type:checkbox__true">@(Enable partial updates)</div>
+			<ui-component name="input" path="?.options.ispartial" config="type:checkbox" default="true">@(Enable partial updates)</ui-component>
 		</div>
 		<hr />
 		<div class="message message-alert m">
@@ -56,8 +56,8 @@
 			<label><i class="ti ti-list"></i>@(Attributes)</label>
 		</div>
 
-		<div data---="movable__?.attrs__selector:figure;exec:?/move">
-			<div data-bind="?.attrs__template:figure" class="listing2">
+		<ui-component name="movable" path="?.attrs" config="selector:figure;exec:?/move">
+			<ui-bind path="?.attrs" config="template:figure" class="listing2 block">
 				<script type="text/html">
 					{{ foreach m in value }}
 					<figure data-id="{{ m.id }}" class="exec" data-exec="?/update" draggable="true">
@@ -71,15 +71,17 @@
 					</figure>
 					{{ end }}
 				</script>
-			</div>
-		</div>
+			</ui-bind>
+		</ui-component>
 
 	</div>
-	<nav data---="validate__?__if:value && value.attrs.length">
-		<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
-		<button name="cancel">@(Cancel)</button>
+	<nav>
+		<ui-component name="validate" path="?" config="if:value && value.attrs && value.attrs.length">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
 	</nav>
-</div>
+</ui-component>
 
 <script>
 
@@ -116,7 +118,7 @@
 				model.y = pos.scrollTop() + 100;
 			}
 
-			exports.tapi('types_save', model, ERROR(function() {
+			exports.tapi('types_save ERROR', model, function() {
 
 				EXEC('common/refresh');
 				hide();
@@ -129,7 +131,7 @@
 					}
 				}
 
-			}));
+			});
 		};
 
 		exports.copyattr = function(el) {
@@ -150,7 +152,7 @@
 			data.callback = function(attr) {
 				data.id = data.id.slug().replace(/\s|-|_/g, '');
 				exports.scope();
-				PUSH('?.attrs', attr);
+				exports.push('attrs', attr);
 			};
 
 			SET('formattr @default', data);
@@ -166,7 +168,6 @@
 				data = CLONE(model.attrs[index]);
 				data.callback = function(attr) {
 					model.attrs[index] = attr;
-					exports.scope();
 					exports.upd('attrs');
 				};
 
@@ -185,7 +186,7 @@
 			var index = model.attrs.findIndex('id', id);
 			if (index !== -1) {
 				model.attrs.splice(index, 1);
-				UPD('?.attrs @changed');
+				exports.upd('attrs @changed');
 			}
 		};
 

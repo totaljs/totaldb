@@ -6,92 +6,94 @@
 	.~PATH~ .ui-radiobuttonexpert-container { padding: 10px; }
 </style>
 
-<div data---="box__common.form2__if:~PATH~;icon:ti ti-file;autofocus:true;reload:?/reload;submit:?/submit;width:700" class="hidden ~PATH~" data-plugin="~PATH~">
+<ui-component name="box" path="common.form2" config="if:~PATH~;icon:ti ti-file;autofocus:true;reload:?/reload;submit:?/submit;width:700" class="hidden ~PATH~" plugin="~PATH~">
 	<div>
-		<div data---="radiobuttonexpert__?.type__datasource:DEF.cl.types__'string'">
+		<ui-component name="radiobuttonexpert" path="?.type" config="datasource:DEF.cl.types" default="'string'">
 			<script type="text/html">
 				<div class="radiobutton">
 					<div><i class="{{ icon }}"></i>{{ name }}</div>
 				</div>
 			</script>
-		</div>
+		</ui-component>
 		<div class="clearfix"></div>
 		<hr />
 		<div class="padding npt npb">
 
-			<div data-bind="?.type__show:value==='type'" class="hidden m">
-				<div data---="input__?.typeid__required:1;dirsource:common.types;placeholder:@(Choose type)">@(Type)</div>
+			<ui-bind path="?.type" config="show:value==='type'" class="hidden block m">
+				<ui-component name="input" path="?.typeid" config="required:1;dirsource:common.types;placeholder:@(Choose type)">@(Type)</ui-component>
 				<div class="help m"><i class="ti ti-question-circle blue"></i>@(Choose a relation between this field and another type)</div>
-				<div data---="input__?.typeremove__type:checkbox">@(Remove this record if someone will remove the related record.)</div>
+				<ui-component name="input" path="?.typeremove" config="type:checkbox">@(Remove this record if someone will remove the related record.)</ui-component>
 				<hr />
-			</div>
+			</ui-bind>
 			<div class="grid-2 mt10">
 				<div class="m">
-					<div data---="input__?.name__required:1;innerlabel:1;placeholder:@(Enter name)">@(Name)</div>
+					<ui-component name="input" path="?.name" config="required:1;innerlabel:1;placeholder:@(Enter name)">@(Name)</ui-component>
 				</div>
 				<div class="m">
-					<div data---="input__?.note__innerlabel:1;placeholder:@(A custom note)">@(Note)</div>
+					<ui-component name="input" path="?.note" config="innerlabel:1;placeholder:@(A custom note)">@(Note)</ui-component>
 				</div>
 			</div>
 			<div class="grid-4">
 				<div class="m">
-					<div data---="input__?.id__monospace:1;required:1;align:1;disabled:1" class="b">@(ID)</div>
+					<ui-component name="input" path="?.id" config="monospace:1;required:1;align:1;disabled:1" class="b">@(ID)</ui-component>
 					<div class="help">@(Attribute identificator)</div>
 				</div>
 				<div class="m">
-					<div data---="input__?.reference__monospace:1;align:1;">@(Reference)</div>
+					<ui-component name="input" path="?.reference" config="monospace:1;align:1;">@(Reference)</ui-component>
 					<div class="help">@(A custom reference)</div>
 				</div>
 				<div class="m">
-					<div data---="input__?.color__type:color">@(Color)</div>
+					<ui-component name="input" path="?.color" config="type:color">@(Color)</ui-component>
 				</div>
 				<div class="m">
-					<div data---="input__?.icon__type:icon">@(Icon)</div>
+					<ui-component name="input" path="?.icon" config="type:icon">@(Icon)</ui-component>
 				</div>
 				<div class="m">
-					<div data---="input__?.currency__required:1;monospace:1;align:1;type:upper__'EUR'" data-bind="?.type__enabled:value==='currency'">@(Currency)</div>
+					<ui-component name="input" path="?.currency" config="required:1;monospace:1;align:1;type:upper" default="'EUR'"><ui-bind path="?.type" config="enabled:value==='currency'"></ui-bind>@(Currency)</ui-component>
 				</div>
 				<div class="m">
-					<div data---="input__?.min__type:number;monospace:1__0">@(Min. value)</div>
+					<ui-component name="input" path="?.min" config="type:number;monospace:1" default="0">@(Min. value)</ui-component>
 				</div>
 				<div class="m">
-					<div data---="input__?.max__type:number;monospace:1__0">@(Max. value)</div>
+					<ui-component name="input" path="?.max" config="type:number;monospace:1" default="0">@(Max. value)</ui-component>
 				</div>
 			</div>
 			<hr />
 			<div class="grid-2">
 				<div class="m">
-					<div data---="input__?.error__placeholder:@(Value of {0} is invalid);icon:ti ti-bug">@(Error message)</div>
+					<ui-component name="input" path="?.error" config="placeholder:@(Value of {0} is invalid);icon:ti ti-bug">@(Error message)</ui-component>
 					<div class="help">@(The app will return the message if the value is not valid)</div>
 				</div>
 				<div class="m">
-					<div data---="input__?.default__monospace:1;placeholder:new Date();icon:ti ti-code">@(Default value)</div>
+					<ui-component name="input" path="?.default" config="monospace:1;placeholder:new Date();icon:ti ti-code">@(Default value)</ui-component>
 					<div class="help">@(The code will be evaluated as a raw JavaScript code)</div>
 				</div>
 			</div>
 			<div class="m">
-				<div data---="input__?.validate__placeholder:return value.indexOf('-') !== -1\;;innerlabel:1;type:multiline;monospace:1">@(A custom validation)</div>
+				<ui-component name="input" path="?.validate" config="placeholder:return value.indexOf('-') !== -1\;;innerlabel:1;type:multiline;monospace:1">@(A custom validation)</ui-component>
 				<div class="help">@(Additional validation mechanism)</div>
 			</div>
 		</div>
 		<hr />
 		<div class="padding npt">
 
-			<div data---="input__?.required__type:checkbox" class="b">@(Required)</div>
-			<div data---="input__?.locked__type:checkbox">@(Lock after filling a value)</div>
+			<ui-component name="input" path="?.required" config="type:checkbox" class="b">@(Required)</ui-component>
+			<ui-component name="input" path="?.locked" config="type:checkbox">@(Lock after filling a value)</ui-component>
 
 			<!--
-			<div data---="input__?.backup__type:checkbox">@(Backup all changes)</div>
-			<div data---="input__?.array__type:checkbox" data-bind="?.used__disabled">@(Array of values)</div>
+			<ui-component name="input" path="?.backup" config="type:checkbox">@(Backup all changes)</ui-component>
+			<ui-component name="input" path="?.array" config="type:checkbox"><ui-bind path="?.used" config="disabled"></ui-bind>@(Array of values)</ui-component>
 			-->
 
 		</div>
 	</div>
-	<nav data---="validate__?">
-		<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
-		<button name="cancel">@(Cancel)</button>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
 	</nav>
-</div>
+</ui-component>
 
 <script>
 

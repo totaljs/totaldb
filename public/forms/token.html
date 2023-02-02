@@ -1,31 +1,33 @@
-<div data---="box__common.form2__if:~PATH~;icon:ti ti-key;autofocus:true;reload:?/reload;submit:?/submit;width:600;zindex:20" class="hidden" data-plugin="~PATH~">
+<ui-component name="box" path="common.form2" config="if:~PATH~;icon:ti ti-key;autofocus:true;reload:?/reload;submit:?/submit;width:600;zindex:20" class="hidden" plugin="~PATH~">
 	<div>
 		<div class="padding npb">
-			<div data---="input__?.name__required:1;innerlabel:1;placeholder:@(Enter a token name)">@(Name)</div>
+			<ui-component name="input" path="?.name" config="required:1;innerlabel:1;placeholder:@(Enter a token name)">@(Name)</ui-component>
 			<div style="height:20px;margin-top:15px">
-				<div class="hidden exec fs12" data-exec="?/copy" data-bind="%showtoken__show">
-					<i class="ti ti-copy"></i> <span class="badge badge-gray"><code data-bind="?.token__text"></code></span>
-				</div>
-				<div class="hidden exec fs12" data-bind="%showtoken__hide" data-exec="?/show">
+				<ui-bind path="%showtoken" config="show" class="hidden exec fs12 block" data-exec="?/copy">
+					<i class="ti ti-copy"></i> <span class="badge badge-gray"><code><ui-bind path="?.token" config="text"></ui-bind></code></span>
+				</ui-bind>
+				<ui-bind path="%showtoken" config="hide" data-exec="?/show" class="hidden exec fs12 block">
 					<i class="ti ti-key"></i> @(Show token)
-				</div>
+				</ui-bind>
 			</div>
 			<hr style="margin-top:10px" />
-			<div data---="input__?.options.websocket__type:checkbox">@(Allow WebSocket synchronization service for workers)</div>
-			<div data---="input__?.options.types__type:checkbox">@(Allow to create/update types)</div>
-			<div data---="input__?.options.sql__type:checkbox">@(Allow to execute SQL commands)</div>
+			<ui-component name="input" path="?.options.websocket" config="type:checkbox">@(Allow WebSocket synchronization service for workers)</ui-component>
+			<ui-component name="input" path="?.options.types" config="type:checkbox">@(Allow to create/update types)</ui-component>
+			<ui-component name="input" path="?.options.sql" config="type:checkbox">@(Allow to execute SQL commands)</ui-component>
 		</div>
 		<hr />
 		<div class="padding npt">
-			<div data---="input__?.types__dirsource:common.types;multiple:1;dirkey:name;placeholder:@(Choose types which you want to allow)">@(Allow types)</div>
+			<ui-component name="input" path="?.types" config="dirsource:common.types;multiple:1;dirkey:name;placeholder:@(Choose types which you want to allow)">@(Allow types)</ui-component>
 			<div class="help"><i class="ti ti-question-circle blue"></i>@(If you don't choose any type, the token will have access to all types.)</div>
 		</div>
 	</div>
-	<nav data---="validate__?__changes:1;strictchanges:1">
-		<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
-		<button name="cancel">@(Cancel)</button>
+	<nav>
+		<ui-component name="validate" path="?" config="changes:1;strictchanges:1">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
 	</nav>
-</div>
+</ui-component>
 
 <script>
 
@@ -49,10 +51,10 @@
 
 		exports.submit = function(hide) {
 			var model = exports.form;
-			exports.tapi('tokens_save @showloading', model, ERROR(function() {
+			exports.tapi('tokens_save @showloading ERROR', model, function() {
 				EXEC('formtokens/refresh');
 				hide();
-			}));
+			});
 		};
 
 	});

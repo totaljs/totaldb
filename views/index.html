@@ -14,50 +14,53 @@
 	<script src="@{REPO.ui}"></script>
 	@{import('meta', 'head', 'default.css', 'favicon.ico')}
 </head>
-<body data---="exec">
+<body>
 
-	<div data---="locale"></div>
-	<div data---="LAZY directory__null__placeholder:@(Search)"></div>
-	<div data---="LAZY colorpicker"></div>
-	<div data---="LAZY icons"></div>
-	<div data---="LAZY datepicker"></div>
-	<div data---="LAZY approve"></div>
-	<div data---="LAZY menu"></div>
-	<div data---="LAZY notify__null__position:bottom right"></div>
-	<div data---="LAZY clipboard"></div>
-	<div data---="LAZY message__null__style:2"></div>
-	<div data---="LAZY fileuploader"></div>
+	<ui-component name="exec"></ui-component>
+	<ui-component name="locale"></ui-component>
+	<ui-component name="LAZY directory" path="null" config="placeholder:@(Search)"></ui-component>
+	<ui-component name="LAZY colorpicker"></ui-component>
+	<ui-component name="LAZY icons"></ui-component>
+	<ui-component name="LAZY datepicker"></ui-component>
+	<ui-component name="LAZY approve"></ui-component>
+	<ui-component name="LAZY menu"></ui-component>
+	<ui-component name="LAZY notify" path="null" config="position:bottom right"></ui-component>
+	<ui-component name="LAZY clipboard"></ui-component>
+	<ui-component name="LAZY message" path="null" config="style:2"></ui-component>
+	<ui-component name="LAZY fileuploader"></ui-component>
 
-	<div data---="windows__common.windows"></div>
-	<div data---="edit"></div>
-	<div data---="errorhandler"></div>
+	<ui-component name="windows" path="common.windows"></ui-component>
+	<ui-component name="edit"></ui-component>
+	<ui-component name="errorhandler"></ui-component>
 
-	<div data---="importer__common.form2__if:formtoken;url:/forms/token.html"></div>
-	<div data---="importer__common.form2__if:formattr;url:/forms/attr.html"></div>
-	<div data---="importer__common.form__if:formtype;url:/forms/type.html"></div>
-	<div data---="importer__common.form__if:formpassword;url:/forms/password.html"></div>
-	<div data---="importer__common.form__if:formpaste;url:/forms/paste.html"></div>
-	<div data---="importer__common.form__if:formtokens;url:/forms/tokens.html"></div>
-	<div data---="importer__common.form__if:formconfig;url:/forms/config.html"></div>
+	<ui-component name="importer" path="common.form2" config="if:formtoken;url:/forms/token.html"></ui-component>
+	<ui-component name="importer" path="common.form2" config="if:formattr;url:/forms/attr.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formtype;url:/forms/type.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formpassword;url:/forms/password.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formpaste;url:/forms/paste.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formtokens;url:/forms/tokens.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formconfig;url:/forms/config.html"></ui-component>
 
 	<ui-component name="ready" class="invisible">
-		<div data---="columns__null__parent:window" class="invisible">
+		<ui-component name="columns" path="null" config="parent:window" class="invisible">
 			<section data-size="60" class="menu">
 				<span class="mainmenu exec" data-exec="common/menu"><i class="ti ti-menu"></i></span>
-				<nav data-bind="common.ready__show">
-					@{if user.sa || user.permissions.include('typescreate')}
-					<span class="exec" data-exec="common/create" title="@(New type)"><i class="ti ti-plus-circle green"></i></span>
-					@{fi}
-					@{if user.sa || user.permissions.include('tokens')}
-					<span class="exec" data-exec="common/tokens" title="@(Tokens)"><i class="ti ti-plug"></i></span>
-					<hr />
-					@{fi}
-					<span class="exec" data-exec="common/querybuilder" title="@(Query Builder)"><i class="ti ti-file-search"></i></span>
-					<span class="exec" data-exec="common/nodes" title="@(Active types)"><i class="ti ti-list"></i></span>
+				<nav>
+					<ui-bind path="common.ready" config="show">
+						@{if user.sa || user.permissions.include('typescreate')}
+						<span class="exec" data-exec="common/create" title="@(New type)"><i class="ti ti-plus-circle green"></i></span>
+						@{fi}
+						@{if user.sa || user.permissions.include('tokens')}
+						<span class="exec" data-exec="common/tokens" title="@(Tokens)"><i class="ti ti-plug"></i></span>
+						<hr />
+						@{fi}
+						<span class="exec" data-exec="common/querybuilder" title="@(Query Builder)"><i class="ti ti-file-search"></i></span>
+						<span class="exec" data-exec="common/nodes" title="@(Active types)"><i class="ti ti-list"></i></span>
+					</ui-bind>
 				</nav>
 			</section>
 			<section>
-				<div data---="layout__null__parent:auto" class="invisible">
+				<ui-component name="layout" path="null" config="parent:auto" class="invisible">
 					<script type="text/plain">
 						{
 							bottom: { size: 140, resize: true, minsize: 100 },
@@ -66,17 +69,17 @@
 					</script>
 
 					<section data-type="main">
-						<div data---="viewbox__null__parent:auto;visibleX:1" class="invisible">
-							<div data---="flow__common.map__width:6000;height:6000;grid:15;outputoffsetY:2;horizontal:1;dblclick:common/browse;contextmenu:common/contextmenu;markers:false"></div>
-						</div>
+						<ui-component name="viewbox" path="null" config="parent:auto;visibleX:1" class="invisible">
+							<ui-component name="flow" path="common.map" config="width:6000;height:6000;grid:15;outputoffsetY:2;horizontal:1;dblclick:common/browse;contextmenu:common/contextmenu;markers:false"></ui-component>
+						</ui-component>
 					</section>
 
 					<section data-type="bottom">
-						<div data-import="url:/parts/logger.html;path:logger"></div>
+						<ui-import config="url:/parts/logger.html;path:logger"></ui-import>
 					</section>
-				</div>
+				</ui-component>
 			</section>
-		</div>
+		</ui-component>
 	</ui-component>
 
 	<script type="text/html" id="template_map">
@@ -87,7 +90,7 @@
 			<div class="name b hellip"><i class="{{ value.icon | empty('ti ti-database') }}"{{ if value.color }} style="color:{{ value.color }}"{{ fi }}></i>{{ value.title }}</div>
 			<div class="note">{{ value.note }}</div>
 			<div class="id exec" data-exec="common/copy"><i class="ti ti-copy"></i>{{ value.id }}</div>
-			<div class="rows"><i class="ti ti-calculator"></i><span data-bind="common.cache.{{ value.id }}__text__helper:pluralize('@(# rows,# row,# rows,# rows)')"></span></div>
+			<div class="rows"><i class="ti ti-calculator"></i><ui-bind path="common.cache.{{ value.id }}" config="text;helper:pluralize('@(# rows,# row,# rows,# rows)')"></ui-bind></div>
 			<nav>
 				<button class="exec" data-exec="common/browse"><i class="ti ti-database"></i>@(Records)</button>
 				<button class="exec" data-exec="common/contextmenu"><i class="ti ti-cog"></i>@(Options)</button>
@@ -125,7 +128,7 @@
 		PLUGIN('common', function(exports) {
 
 			exports.refresh = function() {
-				exports.tapi('types', ERROR(function(response) {
+				exports.tapi('types ERROR', function(response) {
 
 					var tmp = {};
 					for (var item of response) {
@@ -244,7 +247,7 @@
 					exports.set('map', map);
 
 					exports.recount();
-				}));
+				});
 			};
 
 			exports.find = function(el) {
@@ -593,21 +596,21 @@
 			};
 
 			exports.docs = function() {
-				W.open('/docs/');
+				W.open('/docs/' + common.openplatform);
 			};
 
 			exports.config = function() {
-				exports.tapi('config_read', ERROR(function(response) {
+				exports.tapi('config_read ERROR', function(response) {
 					SET('formconfig @reset', response);
 					exports.set('form', 'formconfig');
-				}));
+				});
 			};
 
 			exports.maintenance = function() {
 				SETTER('approve/show', '@(Are you sure you want to run maintenance on the database? The app will remove all removed records and perform VACUUM.)', '"ti ti-wrench" @(Continue)', function() {
-					exports.tapi('maintenance @showloading', ERROR(function() {
+					exports.tapi('maintenance @showloading ERROR', function() {
 						SETTER('notify/success @hideloading', '@(Maintenance has been finished)');
-					}));
+					});
 				});
 			};
 
@@ -625,7 +628,7 @@
 			};
 
 			exports.exportall = function() {
-				location.href = '/internal/backup/' + (common.openplatform ? '&' : '?') + 'data=1';
+				location.href = '/internal/backup/' + (common.openplatform ? (common.openplatform + '&') : '?') + 'data=1';
 			};
 
 			exports.import = function() {
@@ -640,7 +643,7 @@
 					}
 
 					SETTER('notify/success', '@(Import has been finished)');
-					EXEC('?/refresh');
+					exports.exec('refresh');
 				};
 
 				SETTER('fileuploader/upload', opt);
@@ -648,7 +651,7 @@
 
 			exports.clear = function() {
 				SETTER('approve/show', '@(Are you sure you want to clear database?)', '"ti ti-trash" @(Clear)', function() {
-					exports.tapi('types_clear', AEXEC('?/refresh'));
+					exports.tapi('types_clear ERROR', AEXEC('?/refresh'));
 				});
 			};
 

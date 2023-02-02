@@ -1,4 +1,4 @@
-<div data-plugin="~PATH~ datagrid__init:?/init">
+<ui-plugin path="~PATH~ datagrid" config="init:?/init">
 	<div class="toolbar toolbar-bg" style="padding-left:20px">
 		<div class="pull-right mt2">
 			<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="ti ti-copy"></i></span> <span class="badge badge-gray"><code class="b" data-bind="?.id__text"></code></span>
@@ -7,22 +7,26 @@
 			<button class="exec" data-exec="?/refresh"><i class="ti ti-sync"></i>@(Refresh)</button>
 			<button class="exec" data-exec="?/update"><i class="ti ti-cog"></i>@(Settings)</button>
 		</nav>
-		<nav class="pull-left ml10" data-bind="?.checked__disabled .selection:!value || !value.length">
-			<button class="exec b" data-exec="?/create"><i class="ti ti-plus-circle green"></i>@(Create)</button>
-			<button class="exec selection" data-exec="?/copyjson" disabled><i class="ti ti-copy"></i>@(Copy as JSON)</button>
-			<button class="exec selection" data-exec="?/remove"  disabled><i class="ti ti-trash red"></i>@(Remove)</button>
+		<nav class="pull-left ml10">
+			<ui-bind path="?.checked" config="disabled .selection:!value || !value.length">
+				<button class="exec b" data-exec="?/create"><i class="ti ti-plus-circle green"></i>@(Create)</button>
+				<button class="exec selection" data-exec="?/copyjson" disabled><i class="ti ti-copy"></i>@(Copy as JSON)</button>
+				<button class="exec selection" data-exec="?/remove"  disabled><i class="ti ti-trash red"></i>@(Remove)</button>
+			</ui-bind>
 		</nav>
 	</div>
 	<div class="padding"></div>
-</div>
+</ui-plugin>
 
 <script>
 	PLUGIN('? datagrid', function(exports) {
 
 		var ID;
+		var Element;
 
 		exports.init = function(scope, el) {
 
+			Element = el;
 			ID = ATTRD(el);
 
 			var data = PLUGINS.common.prepare(ID);
@@ -43,7 +47,6 @@
 					case 'id':
 						obj.width = 110;
 						obj.monospace = 1;
-						// obj.template = '<div class=\\\"exec\\\" data-exec=\\\"?/copyid\\\" data-prevent=\\\"true\\\"><span class=\\\"ti ti-copy mr5\\\"></span>{{ id }}</div>';
 						break;
 					case 'name':
 						obj.width = 200;
@@ -58,7 +61,7 @@
 
 				switch (col.type) {
 					case 'type':
-						// obj.template = '{{ if {0} }}<span class=\\\"mr5 exec fs11 gray\\\" data-exec=\\\"?/typedetail\\\" data-prevent=\\\"true\\\">@(Detail)</span>{{ {0} }}{{ fi }}'.format(col.id);
+						obj.width = 180;
 						break;
 					case 'boolean':
 					case 'number':
@@ -118,8 +121,7 @@
 			}
 
 			exports.set('id', ID);
-			exports.element.find('.padding').append(('<div data' + '---="datagrid__{0}.response__height:.ui-windows-item;margin:135;checked:?.checked;exec:?/filter;click:?/detail" class="invisible"><scri' + 'pt type="text/html">[{1}]</scr' + 'ipt></div>').format(exports.name, columns.join(',')));
-			setTimeout(() => COMPILE(), 10);
+			Element.find('.padding').append(('<ui-component name="datagrid" path="{0}.response" config="height:.ui-windows-item;margin:135;checked:?.checked;exec:?/filter;click:?/detail" class="invisible"><scri' + 'pt type="text/html">[{1}]</scr' + 'ipt></ui-component>').format(exports.name, columns.join(',')));
 		};
 
 		exports.update = function() {
