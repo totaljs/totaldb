@@ -179,7 +179,7 @@
 		"id": "object",
 		"name": "Object",
 		"color": "#479798",
-		"icon": "far fa-box-up",
+		"icon": "fa fa-scroll",
 		"type": "object",
 		"sortindex": 23
 	}
