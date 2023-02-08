@@ -7,6 +7,7 @@ cp -a ../resources/ resources
 cp -a ../private/ private
 cp -a ../public/ public
 cp -a ../schemas/ schemas
+cp -a ../modules/ modules
 cp -a ../views/ views
 
 # cd ..
