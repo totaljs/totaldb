@@ -170,3 +170,4 @@ Tysqq55                  : Campos
 Tysvd08                  : Filtro
 Tzfisrx                  : Exportar tipos
 Tzs3c11                  : IMPORTAR
+Ta61hvm                  : Copiar atributos
