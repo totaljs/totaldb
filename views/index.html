@@ -17,7 +17,8 @@
 <body>
 
 	<ui-component name="exec"></ui-component>
-	<ui-component name="locale"></ui-component>
+	<ui-component name="locale" config="requests:1;language:@{user.language}"></ui-component>
+
 	<ui-component name="LAZY directory" path="null" config="placeholder:@(Search)"></ui-component>
 	<ui-component name="LAZY colorpicker"></ui-component>
 	<ui-component name="LAZY icons"></ui-component>
