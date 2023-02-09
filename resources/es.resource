@@ -1,5 +1,5 @@
 // Total DB translation (es)
-// Created:  2023-02-09 11:01:16
+// Created:  09/02/2023 - 20:26
 
 permissions              : 401
 T1018hmr                 : Cada tipo contiene un campo interno <b>"nombre"</b> para la identificación humana de los registros almacenados. Su ID es <b>name</b>.
@@ -102,6 +102,7 @@ T9fwbav                  : Singular
 T9sze77                  : Las contraseñas no coinciden.
 T9velmf                  : Nombre en plural
 T9y7qzb                  : Insertar un registro
+Ta61hvm                  : Copiar atributos
 Tah3e8z                  : El tipo no es válido
 Takydcp                  : Identificador del atributo
 Tal2er5                  : Moneda
@@ -170,4 +171,3 @@ Tysqq55                  : Campos
 Tysvd08                  : Filtro
 Tzfisrx                  : Exportar tipos
 Tzs3c11                  : IMPORTAR
-Ta61hvm                  : Copiar atributos
