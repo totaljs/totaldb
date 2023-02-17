@@ -674,7 +674,7 @@ FUNC.makequery = async function(query, callback, $) {
 
 	for (var key in parsed.join) {
 		var join = parsed.join[key];
-		joins.push('LEFT JOIN ' + key + ' ' + join.alias + ' ON ' + join.alias + '.id=t1.' + join.compare);
+		joins.push('LEFT JOIN ' + MAIN.schema + key + ' ' + join.alias + ' ON ' + join.alias + '.id=t1.' + join.compare);
 	}
 
 	if (query.command === 'detail') {
@@ -683,6 +683,8 @@ FUNC.makequery = async function(query, callback, $) {
 		else
 			parsed.filter = 't1.id=' + PG_ESCAPE(query.id || null);
 	}
+
+	var table = MAIN.schema + parsed.type.table;
 
 	parsed.filter = 't1.isremoved=FALSE' + (parsed.filter ? (' AND ' + parsed.filter) : '');
 
@@ -716,8 +718,8 @@ FUNC.makequery = async function(query, callback, $) {
 		offset += ' OFFSET ' + skip;
 
 	if (query.command === 'list') {
-		var count = await db.query('SELECT COUNT(1)::int4 AS count FROM ' + parsed.type.table + ' t1' + join + where + groupby).promise();
-		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + offset).promise();
+		var count = await db.query('SELECT COUNT(1)::int4 AS count FROM ' + table + ' t1' + join + where + groupby).promise();
+		items = await db.query('SELECT ' + fields + ' FROM ' + table + ' t1' + join + where + groupby + sort + offset).promise();
 		response = {};
 		response.limit = query.limit;
 		response.count = count[0].count;
@@ -725,22 +727,22 @@ FUNC.makequery = async function(query, callback, $) {
 		response.page = query.page;
 		response.items = items;
 	} else if (query.command === 'find') {
-		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + offset).promise();
+		items = await db.query('SELECT ' + fields + ' FROM ' + table + ' t1' + join + where + groupby + sort + offset).promise();
 		response = items;
 	} else if (query.command === 'read') {
-		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
+		items = await db.query('SELECT ' + fields + ' FROM ' + table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0] || null;
 	} else if (query.command === 'check') {
-		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
+		items = await db.query('SELECT ' + fields + ' FROM ' + table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0] ? items[0].id : null;
 	} else if (query.command === 'key') {
-		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
+		items = await db.query('SELECT ' + fields + ' FROM ' + table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0] ? items[0].id : null;
 	} else if (query.command === 'detail') {
-		items = await db.query('SELECT ' + fields + ' FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
+		items = await db.query('SELECT ' + fields + ' FROM ' + table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0] || null;
 	} else if (query.command === 'count') {
-		items = await db.query('SELECT COUNT(1)::int4 AS count FROM ' + parsed.type.table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
+		items = await db.query('SELECT COUNT(1)::int4 AS count FROM ' + table + ' t1' + join + where + groupby + sort + ' LIMIT 1').promise();
 		response = items[0].count;
 	}
 	if (parsed.map && items instanceof Array) {

@@ -1,4 +1,4 @@
-CREATE TABLE "public"."tbl_token" (
+CREATE TABLE "{0}"."tbl_token" (
 	"id" text NOT NULL,
 	"name" text,
 	"token" text,
@@ -10,7 +10,7 @@ CREATE TABLE "public"."tbl_token" (
 	PRIMARY KEY ("id")
 );
 
-CREATE TABLE "public"."tbl_type" (
+CREATE TABLE "{0}"."tbl_type" (
 	"id" text NOT NULL,
 	"category" text,
 	"name" text,

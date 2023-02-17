@@ -35,8 +35,10 @@
 			</div>
 			<div class="grid-4">
 				<div class="m">
-					<ui-component name="input" path="?.id" config="monospace:1;required:1;align:1;disabled:1" class="b">@(ID)</ui-component>
-					<div class="help">@(Attribute identificator)</div>
+					<ui-bind path="?.newbie" config="enabled">
+						<ui-component name="input" path="?.id" config="monospace:1;required:1;align:1" class="b">@(ID)</ui-component>
+						<div class="help">@(Attribute identificator)</div>
+					</ui-bind>
 				</div>
 				<div class="m">
 					<ui-component name="input" path="?.reference" config="monospace:1;align:1;">@(Reference)</ui-component>

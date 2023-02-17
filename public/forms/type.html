@@ -147,9 +147,11 @@
 				model.columns = 0;
 
 			model.columns++;
+			data.newbie = true;
 			data.id = 'x' + model.columns.padLeft(2, '0');
 
 			data.callback = function(attr) {
+				delete attr.newbie;
 				data.id = data.id.slug().replace(/\s|-|_/g, '');
 				exports.scope();
 				exports.push('attrs', attr);
