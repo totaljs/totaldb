@@ -3,7 +3,7 @@ FUNC.tokens_load = async function() {
 	if (!MAIN.ready)
 		return;
 
-	var tokens = await DB().query('SELECT id,token,name,types,options FROM tbl_token').promise();
+	var tokens = await DB().query('SELECT id,token,name,types,options FROM {0}tbl_token'.format(MAIN.schema).promise();
 	var formatted = {};
 
 	for (var item of tokens) {
