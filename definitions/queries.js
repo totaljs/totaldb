@@ -648,9 +648,9 @@ function notallowed(user, typeid) {
 FUNC.makequery = async function(query, callback, $) {
 
 	// query.fields  = 'id,COUNT(dtcreated)';
-	// query.filter  = '[name=Skúšobný] AND [attr14_name~%Total%] OR ([attr12=123456] OR [attr7_name=Reject])';
-	// query.where   = 'name=%25Skúšobný%25&attr14_name=%25Total%25';
-	// query.filter  = '[name=Skúšobný] AND [attr14_name~%Total%]';
+	// query.filter  = '[name=Rehearsal] AND [attr14_name~%Total%] OR ([attr12=123456] OR [attr7_name=Reject])';
+	// query.where   = 'name=%25Rehearsal%25&attr14_name=%25Total%25';
+	// query.filter  = '[name=Rehearsal] AND [attr14_name~%Total%]';
 	// query.group   = 'id';
 	// query.sort    = 'attr14_name ASC';
 	// query.command = 'find';
