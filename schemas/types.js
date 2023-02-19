@@ -91,7 +91,7 @@ NEWSCHEMA('Types', function(schema) {
 		var sql = [];
 		for (var key in MAIN.types) {
 			var type = MAIN.types[key];
-			sql.push('SELECT COUNT(1)::int4 as count, \'{1}\' as id FROM {0} WHERE isremoved=FALSE'.format(type.table, type.id));
+			sql.push('SELECT COUNT(1)::int4 as count, \'{1}\' as id FROM {0} WHERE isremoved=FALSE'.format(MAIN.schema + type.table, type.id));
 		}
 
 		DB().query(sql.join(' UNION ALL ')).callback($.callback);
