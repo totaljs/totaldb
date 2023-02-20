@@ -91,7 +91,7 @@ NEWSCHEMA('Types', function(schema) {
 		var sql = [];
 		for (var key in MAIN.types) {
 			var type = MAIN.types[key];
-			sql.push('SELECT COUNT(1)::int4 as count, \'{1}\' as id FROM {0} WHERE isremoved=FALSE'.format(type.table, type.id));
+			sql.push('SELECT COUNT(1)::int4 as count, \'{1}\' as id FROM {0} WHERE isremoved=FALSE'.format(MAIN.schema + type.table, type.id));
 		}
 
 		DB().query(sql.join(' UNION ALL ')).callback($.callback);
@@ -344,8 +344,8 @@ NEWSCHEMA('Types', function(schema) {
 			for (var item of currtypes) {
 				var m = types.findItem('id', item.id);
 				if (m) {
-					m.clear && sql.push('DROP TABLE tbl_' + item.id);
-					sql.push('DELETE FROM tbl_type WHERE id=' + PG_ESCAPE(item.id));
+					m.clear && sql.push('DROP TABLE ' + MAIN.schema + 'tbl_' + item.id);
+					sql.push('DELETE FROM ' + MAIN.schema + 'tbl_type WHERE id=' + PG_ESCAPE(item.id));
 				}
 			}
 
@@ -448,9 +448,9 @@ NEWSCHEMA('Types', function(schema) {
 
 		// DELETE
 		for (var item of types)
-			sql.push('DROP TABLE ' + item.id);
+			sql.push('DROP TABLE ' + MAIN.schema + item.id);
 
-		sql.push('DELETE FROM tbl_type');
+		sql.push('DELETE FROM ' + MAIN.schema + 'tbl_type');
 		sql.wait(function(item, next) {
 			DB().query(item).callback(() => next());
 		}, function() {
