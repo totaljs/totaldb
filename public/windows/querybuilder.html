@@ -33,10 +33,10 @@
 		exports.init = function(scope, el) {
 			var arr = [];
 			arr.push({ name: 'typeid', label: '@(Type)', type: 'list', items: 'common.types', dirsearch: '@(Search type)', required: true });
-			arr.push({ name: 'where', label: '@(Where)', type: 'string', placeholder: 'attr1=Total&attr2=js', value: '' });
-			arr.push({ name: 'filter', label: '@(Filter)', type: 'string', placeholder: '[attr1=Total] AND [attr2=js]', value: '' });
-			arr.push({ name: 'sort', label: '@(Sort)', type: 'string', placeholder: 'attr1 asc', value: '' });
-			arr.push({ name: 'fields', label: '@(Fields)', type: 'string', placeholder: 'id,attr1', value: '' });
+			arr.push({ name: 'where', label: '@(Where)', type: 'string', placeholder: 'x01=Total&x02=js', value: '' });
+			arr.push({ name: 'filter', label: '@(Filter)', type: 'string', placeholder: '[x01=Total] AND [x02=js]', value: '' });
+			arr.push({ name: 'sort', label: '@(Sort)', type: 'string', placeholder: 'x01 asc', value: '' });
+			arr.push({ name: 'fields', label: '@(Fields)', type: 'string', placeholder: 'id,x01', value: '' });
 			arr.push({ name: 'group', label: '@(Group)', type: 'string', placeholder: 'id', value: '' });
 			arr.push({ name: 'page', label: '@(Page)', type: 'number', placeholder: '1', value: 1 });
 			arr.push({ name: 'limit', label: '@(Limit)', type: 'number', placeholder: '100', value: 50 });
