@@ -712,7 +712,7 @@ FUNC.makequery = async function(query, callback, $) {
 
 	if (take && skip)
 		offset += ' LIMIT ' + take + ' OFFSET ' + skip;
-	else if (query.take)
+	else if (take)
 		offset += ' LIMIT ' + take;
 	else if (skip)
 		offset += ' OFFSET ' + skip;
