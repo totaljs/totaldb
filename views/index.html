@@ -48,10 +48,10 @@
 				<span class="mainmenu exec" data-exec="common/menu"><i class="ti ti-menu"></i></span>
 				<nav>
 					<ui-bind path="common.ready" config="show">
-						@{if user.sa || user.permissions.include('typescreate')}
+						@{if user.sa || user.permissions.includes('typescreate')}
 						<span class="exec" data-exec="common/create" title="@(New type)"><i class="ti ti-plus-circle green"></i></span>
 						@{fi}
-						@{if user.sa || user.permissions.include('tokens')}
+						@{if user.sa || user.permissions.includes('tokens')}
 						<span class="exec" data-exec="common/tokens" title="@(Tokens)"><i class="ti ti-plug"></i></span>
 						<hr />
 						@{fi}
