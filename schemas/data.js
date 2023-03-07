@@ -194,7 +194,7 @@ NEWSCHEMA('Data', function(schema) {
 			builder.data(function() {
 				if (!validated.id)
 					validated.id = id;
-				FUNC.changelog('data_save', validated, !is, $);
+				$.audit('data_save', validated);
 			});
 		}
 
@@ -260,7 +260,7 @@ NEWSCHEMA('Data', function(schema) {
 			$.callback(id);
 
 			if (PREF.changelog)
-				FUNC.changelog('data_remove', { id: id }, null, $);
+				$.audit('data_remove', { id: id });
 
 		} else
 			$.callback(null);
