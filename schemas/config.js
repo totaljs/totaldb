@@ -29,6 +29,7 @@ NEWSCHEMA('Config', function(schema) {
 		data.secret = PREF.secret;
 		data.op_reqtoken = PREF.op_reqtoken;
 		data.op_restoken = PREF.op_restoken;
+		data.changelog = PREF.changelog;
 		$.callback(data);
 	});
 
@@ -42,6 +43,7 @@ NEWSCHEMA('Config', function(schema) {
 		PREF.set('secret', model.secret);
 		PREF.set('op_reqtoken', model.op_reqtoken);
 		PREF.set('op_restoken', model.op_restoken);
+		PREF.set('changelog', model.changelog);
 		FUNC.reconfigure($.done());
 	});
 
