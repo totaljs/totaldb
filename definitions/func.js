@@ -163,20 +163,11 @@ FUNC.reconfigure = function(callback) {
 	});
 };
 
-FUNC.changelog = function(type, data, insert, $) {
-
-	if (PREF.changelog) {
-		var data = {};
-		data.type = type;
-		data.data = data;
-
-		if (insert != null)
-			data.insert = insert;
-
-		data.user = $.user;
-		RESTBuilder.POST(PREF.changelog, data).keepalive().callback(ERROR('Changelog'));
-	}
-
+DEF.onAudit = function(name, data) {
+	data.app = CONF.name;
+	data.sessionid = data.thread = undefined;
+	
+	RESTBuilder.POST(PREF.changelog, data).keepalive().callback(ERROR('Changelog'));
 };
 
 ON('ready', function() {
