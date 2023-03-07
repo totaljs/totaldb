@@ -149,7 +149,7 @@ NEWSCHEMA('Types', function(schema) {
 						$.success(customid);
 						model.id = customid;
 						MAIN.ws && MAIN.ws.send({ type: 'type_save', id: model.id });
-						PREF.changelog && FUNC.changelog('type_save', model, false, $);
+						PREF.changelog && $.audit('type_save', model);
 					}));
 				});
 				return;
@@ -163,7 +163,7 @@ NEWSCHEMA('Types', function(schema) {
 			FUNC.types_load($.successful(function() {
 				$.success(model.id);
 				MAIN.ws && MAIN.ws.send({ type: 'type_save', id: model.id });
-				PREF.changelog && FUNC.changelog('type_save', model, true, $);
+				PREF.changelog && $.audit('type_save', model);
 			}));
 		});
 
@@ -218,7 +218,7 @@ NEWSCHEMA('Types', function(schema) {
 				FUNC.types_load($.successful(function() {
 					$.success(id);
 					MAIN.ws && MAIN.ws.send({ type: 'type_remove', id: id });
-					PREF.changelog && FUNC.changelog('type_remove', { id: id }, null, $);
+					PREF.changelog && $.audit('type_remove', { id: id });
 				}));
 			});
 		});
