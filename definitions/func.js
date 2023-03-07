@@ -163,13 +163,6 @@ FUNC.reconfigure = function(callback) {
 	});
 };
 
-DEF.onAudit = function(name, data) {
-	data.app = CONF.name;
-	data.sessionid = data.thread = undefined;
-	
-	RESTBuilder.POST(PREF.changelog, data).keepalive().callback(ERROR('Changelog'));
-};
-
 ON('ready', function() {
 	FUNC.reconfigure();
 });
