@@ -55,6 +55,9 @@
 						<span class="exec" data-exec="common/tokens" title="@(Tokens)"><i class="ti ti-plug"></i></span>
 						<hr />
 						@{fi}
+						@{if user.sa || user.permissions.includes('backuprestore')}
+						<span class="exec" data-exec="common/paste" title="@(Paste JSON)"><i class="ti ti-paste"></i></span>
+						@{fi}
 						<span class="exec" data-exec="common/querybuilder" title="@(Query Builder)"><i class="ti ti-file-search"></i></span>
 						<span class="exec" data-exec="common/nodes" title="@(Active types)"><i class="ti ti-list"></i></span>
 					</ui-bind>
@@ -322,8 +325,12 @@
 				opt.items.push('@(Copy to clipboard)');
 				opt.items.push({ id: 'copyattrs', name: '@(Copy attributes)', icon: 'ti ti-copy' });
 				opt.items.push({ id: 'copy', name: '@(JSON)', icon: 'ti ti-copy' });
-				opt.items.push({ id: 'copyschema', name: '@(Schema)', icon: 'ti ti-copy' });
+				// opt.items.push({ id: 'copyschema', name: '@(Schema)', icon: 'ti ti-copy' });
 				opt.items.push({ id: 'copyinline', name: '@(Inline schema)', icon: 'ti ti-copy' });
+
+				if (!UNAUTHORIZED($, 'tokens')) {
+					opt.items.push({ name: '@(UI Builder)', icon: 'ti ti-paint-brush' });
+				}
 
 				if (!UNAUTHORIZED($, 'typesremove')) {
 					opt.items.push('-');
@@ -350,7 +357,7 @@
 								response.collection = 'type';
 								delete response.dtremoved;
 								delete response.isremoved;
-								SETTER('clipboard/copy', STRINGIFY(response));
+								SETTER('clipboard/copy', JSON.stringify(response, (k, v) => v != null && v !== '' ? v : undefined, '\t'));
 								SETTER('notify/success', '@(Copied)');
 							}));
 							break;
@@ -409,6 +416,7 @@
 							}));
 					}
 				};
+
 				SETTER('menu/show', opt);
 			};
 

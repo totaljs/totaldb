@@ -1,6 +1,6 @@
 <ui-component name="miniform" path="common.form" config="if:~PATH~;title:@(Paste JSON data);icon:ti ti-paste;autofocus:true;submit:?/submit;width:500" class="hidden" plugin="~PATH~">
 	<div class="padding">
-		<ui-component name="input" path="?.data" config="type:multiline;required:1;height:250;monospace:1">@(JSON data)</ui-component>
+		<ui-component name="input" path="?.data" config="type:multiline;required:1;height:250;tabs:1;monospace:1">@(JSON data)</ui-component>
 	</div>
 	<nav>
 		<ui-component name="validate" path="?">
@@ -63,8 +63,10 @@
 				SETTER('loading/hide');
 				if (errors.length)
 					SETTER('message/warning', errors.join('<br>'));
-				else
+				else {
+					SETTER('notify/show', '@(Imported successfully.)');
 					hide();
+				}
 			});
 
 		};

@@ -123,7 +123,7 @@ NEWSCHEMA('Types', function(schema) {
 		var customid = id;
 		if (customid && customid[0] === '@') {
 			customid = customid.substring(1);
-			model.id = null;
+			model.id = undefined;
 		}
 
 		if (!model.options)
@@ -144,10 +144,10 @@ NEWSCHEMA('Types', function(schema) {
 				}
 
 				model.dtupdated = NOW;
-				db.modify('tbl_type', model).id(id).error(404).done($, function() {
+				db.modify('tbl_type', model).id(customid).error(404).done($, function() {
 					FUNC.types_load($.successful(function() {
-						$.success(id);
-						model.id = id;
+						$.success(customid);
+						model.id = customid;
 						MAIN.ws && MAIN.ws.send({ type: 'type_save', id: model.id });
 						PREF.changelog && FUNC.changelog('type_save', model, false, $);
 					}));
