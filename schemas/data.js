@@ -325,7 +325,7 @@ NEWSCHEMA('Data', function(schema) {
 			return;
 		}
 
-		if (!$.user.sa && $.user.types && $.user.types[$.id]) {
+		if (!$.user.sa && $.user.types && !$.user.types[$.id]) {
 			$.callback(EMPTYARRAY);
 			return;
 		}
