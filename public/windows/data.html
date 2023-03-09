@@ -1,5 +1,5 @@
 <ui-plugin path="~PATH~ datagrid" config="init:?/init">
-	<div class="toolbar toolbar-bg" style="padding-left:20px">
+	<div class="toolbar toolbar-bg" style="padding-left:20px;background-color:#F8F8F8">
 		<div class="pull-right mt2">
 			<span class="exec mr5" data-exec="?/copy" title="@(Copy ID to the clipboard)"><i class="ti ti-copy"></i></span> <span class="badge badge-gray"><code class="b" data-bind="?.id__text"></code></span>
 		</div>
@@ -10,7 +10,7 @@
 		<nav class="pull-left ml10">
 			<ui-bind path="?.checked" config="disabled .selection:!value || !value.length">
 				<button class="exec b" data-exec="?/create"><i class="ti ti-plus-circle green"></i>@(Create)</button>
-				<button class="exec selection" data-exec="?/copyjson" disabled><i class="ti ti-copy"></i>@(Copy as JSON)</button>
+				<button class="exec selection" data-exec="?/copyclipboard" disabled><i class="ti ti-copy"></i>@(Copy to clipboard)</button>
 				<button class="exec selection" data-exec="?/remove"  disabled><i class="ti ti-trash red"></i>@(Remove)</button>
 			</ui-bind>
 		</nav>
@@ -147,6 +147,29 @@
 			});
 		};
 
+		exports.copyclipboard = function(el) {
+			var opt = {};
+			opt.element = el;
+			opt.items = [];
+			opt.items.push({ id: 'copyjson', name: '@(In JSON format)', icon: 'ti ti-copy' });
+			opt.items.push({ id: 'copyxls', name: '@(To Excel)', icon: 'ti ti-table-alt' });
+			opt.items.push({ id: 'copycsv', name: '@(To CSV)', icon: 'ti ti-file' });
+			opt.callback = function(sel) {
+				switch (sel.id) {
+					case 'copyjson':
+						exports.copyjson();
+						break;
+					case 'copyxls':
+						exports.copytxt('\t');
+						break;
+					case 'copycsv':
+						exports.copytxt(',');
+						break;
+				}
+			};
+			SETTER('menu/show', opt);
+		};
+
 		exports.copy = function(el) {
 			SETTER('clipboard/copy', el.parent().find('code').text());
 			SETTER('notify/success', '@(Copied)');
@@ -155,6 +178,54 @@
 		exports.copyid = function(el) {
 			SETTER('clipboard/copy', el.text());
 			SETTER('notify/success', '@(Copied)');
+		};
+
+		exports.copytxt = function(delimiter) {
+
+			SETTER('loading/show');
+
+			var model = exports.model;
+			var arr = [];
+
+			var data = PLUGINS.common.prepare(ID);
+
+			var tmp = [];
+			for (var col of data.head)
+				tmp.push('"{0}"'.format(col.name));
+
+			arr.push(tmp.join(delimiter));
+
+			model.checked.wait(function(item, next) {
+				exports.tapi('data_export/{0}/{1}'.format(ID, item.id) + common.openplatform + ' ERROR', function(response) {
+					tmp = [];
+					for (var col of data.head) {
+						var val = response[col.id];
+						if (val instanceof Date) {
+							tmp.push('"{0}"'.format(val.format('yyyy-MM-dd HH:mm')));
+						} else {
+							switch (typeof(val)) {
+								case 'string':
+									tmp.push('"{0}"'.format(val.replace(/\"/, '""')));
+									break;
+								case 'number':
+								case 'boolean':
+									tmp.push(val + '');
+									break;
+								default:
+									tmp.push(val == null ? '' : '<object>');
+									break;
+							}
+						}
+					}
+					arr.push(tmp.join(delimiter));
+					next();
+				});
+			}, function() {
+				SETTER('loading/hide');
+				SETTER('notify/success', '@(Copied)');
+				SETTER('clipboard/copy', arr.join('\n'));
+			});
+
 		};
 
 		exports.copyjson = function(el) {

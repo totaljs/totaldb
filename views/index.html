@@ -17,6 +17,7 @@
 <body>
 
 	<ui-component name="exec"></ui-component>
+	<ui-component name="loading" class="hidden"></ui-component>
 	<ui-component name="locale" config="requests:1;language:@{user.language}"></ui-component>
 
 	<ui-component name="LAZY directory" path="null" config="placeholder:@(Search)"></ui-component>
@@ -450,8 +451,10 @@
 				}
 
 				win.cachekey = 'data' + id;
-				win.offset = { x: 200, y: 100, width: 840, height: 500, minwidth: 450, minheight: 300 };
-				win.actions = { move: true, close: true, resize: true, maximize: true, minimize: false, autosave: true };
+				var w = (WW / 100) * 70 >> 0;
+				var h = (WH / 100) * 70 >> 0;
+				win.offset = { x: ((WW / 2) - (w / 2)) >> 0, y: (((WH / 2) - (h / 2)) >> 0) - 80, width: w, height: h, minwidth: 550, minheight: 300 };
+				win.actions = { move: true, close: true, resize: true, maximize: true, minimize: true, autosave: true };
 				if (!type.icon)
 					type.icon = 'ti ti-database';
 				win.title = '<i class="{icon} mr5"></i>{name}'.args(type);
