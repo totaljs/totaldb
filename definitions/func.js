@@ -26,7 +26,7 @@ function makepgtype(type) {
 FUNC.pg_check = async function(type, callback) {
 
 	var db = DB();
-	var schema = MAIN.schema ? MAIN.schema.substring(1) : 'public';
+	var schema = MAIN.schema ? MAIN.schema.slice(0, -1) : 'public';
 	var columns = await db.query('SELECT "column_name" as id, UPPER("data_type") as type FROM information_schema.columns WHERE table_schema = \'{0}\' AND table_name=\'{1}\''.format(schema, type.id)).promise();
 	var sql = [];
 	var comments = [];
