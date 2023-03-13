@@ -88,7 +88,10 @@ FUNC.pg_check = async function(type, callback) {
 	};
 
 	if (sql.length)
-		db.query(sql.join(';\n') + ';').callback(done);
+		db.query(sql.join(';\n') + ';').callback(function(err) {
+			err && console.error(type.id + ':', err);
+			done();
+		});
 	else
 		done();
 

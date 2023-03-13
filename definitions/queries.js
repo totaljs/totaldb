@@ -580,9 +580,9 @@ function makesort(cache, type, query) {
 				continue;
 			}
 
-			var refattr = attr.ref.fields[key2];
+			var refattr = attr.ref ? attr.ref.fields[key2] : null;
 			if (!refattr) {
-				cache.errors.push('query.sort: "{0}" is not defined in the type "{1}"'.format(key, attr.ref.id));
+				cache.errors.push('query.sort: "{0}" is not defined in the type "{1}"'.format(key, attr && attr.ref ? attr.ref.id : key2));
 				continue;
 			}
 
