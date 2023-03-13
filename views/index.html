@@ -329,10 +329,6 @@
 				// opt.items.push({ id: 'copyschema', name: '@(Schema)', icon: 'ti ti-copy' });
 				opt.items.push({ id: 'copyinline', name: '@(Inline schema)', icon: 'ti ti-copy' });
 
-				if (!UNAUTHORIZED($, 'tokens')) {
-					opt.items.push({ name: '@(UI Builder)', icon: 'ti ti-paint-brush' });
-				}
-
 				if (!UNAUTHORIZED($, 'typesremove')) {
 					opt.items.push('-');
 					opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'ti ti-trash red' });

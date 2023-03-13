@@ -57,6 +57,9 @@
 						obj.width = 140;
 						obj.format = '[ts]';
 						break;
+					default:
+						obj.text += ' <b style=\\"font-weight:normal\\">' + col.id + '</b>';
+						break;
 				}
 
 				switch (col.type) {
