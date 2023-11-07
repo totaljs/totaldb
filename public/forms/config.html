@@ -10,7 +10,7 @@
 		</div>
 
 		<p>@(Total DB supports PostgreSQL schemas. If you want to provide this instance in the specific DB schema then you can define it via <code class="badge badge-silver">?schema=NAME</code>)</p>
-		<ui-component name="input" path="?.db" config="required:1;innerlabel:1;camouflage:1;placeholder:postgres\://user\:password@localhost/database">@(Connection string)</ui-component>
+		<ui-component name="input" path="?.db" config="required:1;innerlabel:1;camouflage:1;maxlength:250;placeholder:postgres\://user\:password@localhost/database">@(Connection string)</ui-component>
 		<div class="help m">@(A connection string to the PostgreSQL database.)</div>
 
 		<ui-component name="input" path="?.changelog" config="required:0;innerlabel:1;placeholder:https\://yourapi.com">@(Endpoint for changelog)</ui-component>
